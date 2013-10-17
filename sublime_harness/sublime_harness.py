@@ -33,7 +33,7 @@ logger = Logger()
 
 
 class Base(object):
-    plugin_test_dir = os.path.join(sublime_info.get_package_directory(), 'sublime-plugin-tests-tmp')
+    plugin_test_dir = os.path.join(sublime_info.get_package_directory(), 'sublime-harness-tmp')
 
     @classmethod
     def ensure_plugin_test_dir(cls):
@@ -99,35 +99,19 @@ class Base(object):
         shutil.copyfile(orig_command_path, cls._init_launcher_path)
 
     @classmethod
-    def _run_test(cls, test_str, auto_kill_sublime=False):
+    def run_plugin(cls, plugin_str):
         # Guarantee there is an output directory and launcher
         cls._ensure_utils()
 
-        # Reserve an output file
-        output_file = tempfile.mkstemp()[1]
-
-        # Template plugin
-        plugin_runner = None
-        f = open(__dir__ + '/templates/plugin_runner.py')
-        runner_template = Template(f.read())
-        plugin_runner = runner_template.render(output_file=output_file,
-                                               auto_kill_sublime=auto_kill_sublime)
-        f.close()
-
-        # Output plugin_runner to directory
-        f = open(cls.plugin_test_dir + '/plugin_runner.py', 'w')
-        f.write(plugin_runner)
-        f.close()
-
         # Output test to directory
         f = open(cls.plugin_test_dir + '/plugin.py', 'w')
-        f.write(test_str)
+        f.write(plugin_str)
         f.close()
 
         # TODO: These commands should go in a launching harness
         # If we are running Sublime Text 3 and it has not yet started, use `init`
         running_via_init = False
-        if SUBLIME_TEXT_VERSION == '3.0':
+        if sublime_info.get_sublime_version >= 3000:
             # TODO: Use tasklist for Windows
             # Get process list
             child = subprocess.Popen(["ps", "ax"], stdout=subprocess.PIPE)
@@ -167,28 +151,3 @@ class Base(object):
 
         # Return the callback
         return callback
-
-            # TODO: Use this logic for when another request to run is up
-            # # and if Sublime was not running, wait for it to terminate
-            # if not sublime_is_running:
-            #     while True:
-            #         sublime_is_still_running = False
-            #         # TODO: Modularize this
-            #         child = subprocess.Popen(["ps", "ax"], stdout=subprocess.PIPE)
-            #         ps_list = str(child.stdout.read())
-
-            #         # Kill the child
-            #         child.kill()
-
-            #         # TODO: Output ps_list to a debug file
-            #         logger.debug('Current process list: %s' % ps_list)
-
-            #         for process in ps_list.split('\n'):
-            #             if cls._sublime_command in process:
-            #                 sublime_is_still_running = True
-
-            #         if not sublime_is_still_running:
-            #             break
-            #         else:
-            #             logger.debug('Waiting for %s to terminate' % cls._sublime_command)
-            #             time.sleep(0.1)
