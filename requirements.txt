@@ -1,1 +1,2 @@
 sublime_info==0.1.1
+Jinja2==2.7.1
