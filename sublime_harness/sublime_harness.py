@@ -53,15 +53,9 @@ class Base(object):
                 shutil.copyfile(orig_command_path, dest_command_path)
 
                 # and notify the user we must restart Sublime
-                raise Exception('We had to update the test launcher plugin. You must close or restart Sublime to continue testing.')
+                raise Exception('We had to update the sublime-harness plugin. You must close or restart Sublime to continue testing.')
 
     init_launcher_path = os.path.join(plugin_dir, 'init_launcher.py')
-
-    @classmethod
-    def remove_init_launcher(cls):
-        # If the init launcher exists, delete it
-        if os.path.exists(cls.init_launcher_path):
-            os.unlink(cls.init_launcher_path)
 
     @classmethod
     def install_init_launcher(cls):
@@ -75,6 +69,12 @@ class Base(object):
         # TODO: Verify this doesn't have any double invocation consequences
         orig_command_path = os.path.join(__dir__, '/launchers/init.py')
         shutil.copyfile(orig_command_path, cls.init_launcher_path)
+
+    @classmethod
+    def remove_init_launcher(cls):
+        # If the init launcher exists, delete it
+        if os.path.exists(cls.init_launcher_path):
+            os.unlink(cls.init_launcher_path)
 
     @classmethod
     def run_plugin(cls, plugin_str):
