@@ -6,12 +6,12 @@ import time
 import tempfile
 
 # Load in 3rd party dependencies
+import sublime_info
 from jinja2 import Template
 
 # Set up constants
 __dir__ = os.path.dirname(os.path.abspath(__file__))
-SUBLIME_TEXT_VERSION = os.environ.get('SUBLIME_TEXT_VERSION', None)
-
+print sublime_info
 
 # TODO: Consider using a proper logger
 class Logger(object):
