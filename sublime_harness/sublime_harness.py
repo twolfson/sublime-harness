@@ -11,7 +11,6 @@ from jinja2 import Template
 
 # Set up constants
 __dir__ = os.path.dirname(os.path.abspath(__file__))
-print sublime_info
 
 # TODO: Consider using a proper logger
 class Logger(object):
@@ -27,30 +26,32 @@ logger = Logger()
 
 
 class Base(object):
+    plugin_test_dir = os.path.join(sublime_info.get_package_directory(), 'sublime-plugin-tests-tmp')
+
     @classmethod
-    def _ensure_plugin_test_dir(cls):
+    def ensure_plugin_test_dir(cls):
         # If the plugin test directory does not exist, create it
-        if not os.path.exists(cls._plugin_test_dir):
-            os.makedirs(cls._plugin_test_dir)
+        if not os.path.exists(cls.plugin_test_dir):
+            os.makedirs(cls.plugin_test_dir)
 
     @classmethod
     def _ensure_utils(cls):
         # Ensure the plugin test directory exists
-        cls._ensure_plugin_test_dir()
+        cls.ensure_plugin_test_dir()
 
         # TODO: Use similar copy model minus the exception
         # TODO: If we overwrite utils, be sure to wait so that changes for import get picked up
-        if not os.path.exists(cls._plugin_test_dir + '/utils'):
-            shutil.copytree(__dir__ + '/utils', cls._plugin_test_dir + '/utils')
+        if not os.path.exists(cls.plugin_test_dir + '/utils'):
+            shutil.copytree(__dir__ + '/utils', cls.plugin_test_dir + '/utils')
 
     @classmethod
-    def _install_command_launcher(cls):
+    def install_command_launcher(cls):
         # Guarantee the plugin test dir exists
-        cls._ensure_plugin_test_dir()
+        cls.ensure_plugin_test_dir()
 
         # If command launcher doesn't exist, copy it
         orig_command_path = __dir__ + '/launchers/command.py'
-        dest_command_path = cls._plugin_test_dir + '/command_launcher.py'
+        dest_command_path = cls.plugin_test_dir + '/command_launcher.py'
         if not os.path.exists(dest_command_path):
             shutil.copyfile(orig_command_path, dest_command_path)
         else:
@@ -69,21 +70,21 @@ class Base(object):
                 # and notify the user we must restart Sublime
                 raise Exception('We had to update the test launcher plugin. You must close or restart Sublime to continue testing.')
 
-    _init_launcher_path = _plugin_test_dir + '/init_launcher.py'
+    _init_launcher_path = plugin_test_dir + '/init_launcher.py'
 
     @classmethod
-    def _remove_init_launcher(cls):
+    def remove_init_launcher(cls):
         # If the init launcher exists, delete it
         if os.path.exists(cls._init_launcher_path):
             os.unlink(cls._init_launcher_path)
 
     @classmethod
-    def _install_init_launcher(cls):
+    def install_init_launcher(cls):
         # Guarantee the plugin test dir exists
-        cls._ensure_plugin_test_dir()
+        cls.ensure_plugin_test_dir()
 
         # Clean up any past instances of init launcher
-        cls._remove_init_launcher()
+        cls.remove_init_launcher()
 
         # Install a new one
         # TODO: Verify this doesn't have any double invocation consequences
@@ -107,12 +108,12 @@ class Base(object):
         f.close()
 
         # Output plugin_runner to directory
-        f = open(cls._plugin_test_dir + '/plugin_runner.py', 'w')
+        f = open(cls.plugin_test_dir + '/plugin_runner.py', 'w')
         f.write(plugin_runner)
         f.close()
 
         # Output test to directory
-        f = open(cls._plugin_test_dir + '/plugin.py', 'w')
+        f = open(cls.plugin_test_dir + '/plugin.py', 'w')
         f.write(test_str)
         f.close()
 
@@ -140,7 +141,7 @@ class Base(object):
             logger.debug('Current process list: %s' % ps_list)
             if not sublime_is_running:
                 # Install the init trigger
-                cls._install_init_launcher()
+                cls.install_init_launcher()
 
                 # and launch sublime_text
                 logger.info('Launching %s via init' % cls._sublime_command)
@@ -149,57 +150,38 @@ class Base(object):
                 # Mark the init to prevent double launch
                 running_via_init = True
 
-        # Otherwise, use `--command` trigger
-        # TODO: Can we consolidate these? `init` might work in *all* cases and allow us to move around the plugin locking in as with `--command`
-        if not running_via_init:
-            # Install the command launcher
-            cls._install_command_launcher()
-
-            # Start a subprocess to run the plugin
-            logger.info('Launching %s via --command' % cls._sublime_command)
-            subprocess.call([cls._sublime_command, '--command', 'sublime_plugin_test_tmp'])
-
-        # Wait for the output file to exist
-        while (not os.path.exists(output_file) or os.stat(output_file).st_size == 0):
-            logger.debug('Waiting for %s to exist / have size' % output_file)
-            time.sleep(0.1)
+        # By default, return a callback that does nothing
+        callback = lambda: True
 
         # If we used the init command
         if running_via_init:
-            # Clean up
-            cls._remove_init_launcher()
+            # Return a callback to clean up init launcher
+            callback = lambda: cls.remove_init_launcher()
 
-            # and if Sublime was not running, wait for it to terminate
-            if not sublime_is_running:
-                while True:
-                    sublime_is_still_running = False
-                    # TODO: Modularize this
-                    child = subprocess.Popen(["ps", "ax"], stdout=subprocess.PIPE)
-                    ps_list = str(child.stdout.read())
+        # Return the callback
+        return callback
 
-                    # Kill the child
-                    child.kill()
+            # TODO: Use this logic for when another request to run is up
+            # # and if Sublime was not running, wait for it to terminate
+            # if not sublime_is_running:
+            #     while True:
+            #         sublime_is_still_running = False
+            #         # TODO: Modularize this
+            #         child = subprocess.Popen(["ps", "ax"], stdout=subprocess.PIPE)
+            #         ps_list = str(child.stdout.read())
 
-                    # TODO: Output ps_list to a debug file
-                    logger.debug('Current process list: %s' % ps_list)
+            #         # Kill the child
+            #         child.kill()
 
-                    for process in ps_list.split('\n'):
-                        if cls._sublime_command in process:
-                            sublime_is_still_running = True
+            #         # TODO: Output ps_list to a debug file
+            #         logger.debug('Current process list: %s' % ps_list)
 
-                    if not sublime_is_still_running:
-                        break
-                    else:
-                        logger.debug('Waiting for %s to terminate' % cls._sublime_command)
-                        time.sleep(0.1)
+            #         for process in ps_list.split('\n'):
+            #             if cls._sublime_command in process:
+            #                 sublime_is_still_running = True
 
-        # Read in the output
-        with open(output_file) as f:
-            # Read, parse, and return the result
-            result = f.read()
-            result_lines = result.split('\n')
-            return {
-                'raw_result': result,
-                'success': result_lines[0] == 'SUCCESS',
-                'meta_info': '\n'.join(result_lines[1:])
-            }
+            #         if not sublime_is_still_running:
+            #             break
+            #         else:
+            #             logger.debug('Waiting for %s to terminate' % cls._sublime_command)
+            #             time.sleep(0.1)
