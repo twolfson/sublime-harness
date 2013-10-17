@@ -15,8 +15,7 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 # TODO: We are going to need a mechanism for utils
 # (e.g. get temporary dir, copy dir, run script in file)
 
-# TODO: We need to decide if callback is the best cleanup mechanism.
-# Maybe something more like `open`, `close` is more Pythonic
+# TODO: init launcher needs that file safeguard to deal with people who don't clean up
 
 
 class Base(object):
