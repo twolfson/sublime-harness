@@ -76,14 +76,28 @@ class Base(object):
         if os.path.exists(cls.init_launcher_path):
             os.unlink(cls.init_launcher_path)
 
-    @classmethod
-    def run_plugin(cls, plugin_str):
-        # Guarantee there is an output directory and launcher
-        cls.ensure_plugin_dir()
+    def __init__(self, plugin_str):
+        # Save the plugin_str for later
+        self.plugin_str = plugin_str
+
+        # Save defaults
+        self.close_called = True
+
+    def __enter__(self):
+        self.run()
+
+    def __exit__(self):
+        self.close()
+
+    def run(self):
+        # TODO: Add safeguard for only running once at a time
+
+        # Guarantee there is an output directory
+        self.ensure_plugin_dir()
 
         # Output test to directory
-        f = open(os.path.join(cls.plugin_dir, '/plugin.py'), 'w')
-        f.write(plugin_str)
+        f = open(os.path.join(self.plugin_dir, '/plugin.py'), 'w')
+        f.write(self.plugin_str)
         f.close()
 
         # TODO: These commands should go in a launching harness
@@ -102,7 +116,7 @@ class Base(object):
             # TODO: This could be subl, sublime_text, or other
             sublime_is_running = False
             for process in ps_list.split('\n'):
-                if cls._sublime_command in process:
+                if self._sublime_command in process:
                     sublime_is_running = True
                     break
 
@@ -110,22 +124,23 @@ class Base(object):
             logger.debug('Current process list: %s' % ps_list)
             if not sublime_is_running:
                 # Install the init trigger
-                cls.install_init_launcher()
+                self.install_init_launcher()
 
                 # and launch sublime_text
-                logger.info('Launching %s via init' % cls._sublime_command)
-                subprocess.call([cls._sublime_command])
+                logger.info('Launching %s via init' % self._sublime_command)
+                subprocess.call([self._sublime_command])
 
                 # Mark the init to prevent double launch
                 running_via_init = True
 
-        # By default, return a callback that does nothing
-        callback = lambda: True
+        # Save running_via_init info
+        self.running_via_init = running_via_init
 
-        # If we used the init command
-        if running_via_init:
-            # Return a callback to clean up init launcher
-            callback = lambda: cls.remove_init_launcher()
+        # Mark close as not called
+        self.close_called = False
 
-        # Return the callback
-        return callback
+    def close(self):
+        # TODO: When we get to generic directories, clean them up
+        # If we were running via init, clean it up
+        if self.running_via_init:
+            self.remove_init_launcher()
