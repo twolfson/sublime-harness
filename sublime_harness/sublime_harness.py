@@ -25,6 +25,13 @@ class Logger(object):
 logger = Logger()
 
 
+# TODO: We are going to need a mechanism for utils
+# (e.g. get temporary dir, copy dir, run script in file)
+
+# TODO: We need to decide if callback is the best cleanup mechanism.
+# Maybe something more like `open`, `close` is more Pythonic
+
+
 class Base(object):
     plugin_test_dir = os.path.join(sublime_info.get_package_directory(), 'sublime-plugin-tests-tmp')
 
