@@ -18,7 +18,7 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 # TODO: init launcher needs that file safeguard to deal with people who don't clean up
 
 
-class Base(object):
+class Harness(object):
     plugin_dir = os.path.join(sublime_info.get_package_directory(), 'sublime-harness-tmp')
 
     @classmethod
