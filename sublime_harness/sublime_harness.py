@@ -21,6 +21,7 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 class Harness(object):
     plugin_dir = os.path.join(sublime_info.get_package_directory(), 'sublime-harness-tmp')
     sublime_path = sublime_info.get_sublime_path()
+    sublime_command = os.path.basename(sublime_path)
 
     @classmethod
     def ensure_plugin_dir(cls):
@@ -107,8 +108,7 @@ class Harness(object):
             # TODO: This could be subl, sublime_text, or other
             sublime_is_running = False
             for process in ps_list.split('\n'):
-                # TODO: Pretty sure this won't work as it is a full path (not listed in `ps`)
-                if self.sublime_path in process:
+                if self.sublime_command in process:
                     sublime_is_running = True
                     break
 
