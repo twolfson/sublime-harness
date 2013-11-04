@@ -107,7 +107,7 @@ class Harness(object):
         # TODO: These commands should go in a launching harness
         # If we are running Sublime Text 3 and it has not yet started, use `init`
         running_via_init = False
-        if sublime_info.get_sublime_version >= 3000:
+        if sublime_info.get_sublime_version() >= 3000:
             # TODO: Use tasklist for Windows
             # Get process list
             child = subprocess.Popen(['ps', 'ax'], stdout=subprocess.PIPE)
@@ -139,6 +139,8 @@ class Harness(object):
 
         # Save running_via_init info
         self.running_via_init = running_via_init
+
+        # TODO: What happened to the damn run command -_-;;
 
         # Mark close as not called
         self.close_called = False
