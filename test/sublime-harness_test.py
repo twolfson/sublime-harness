@@ -16,9 +16,10 @@ sublime-harness
             does not execute the code twice
 """
 
-# Decision: Code up v1 as plugin-level only (or maybe allow lower level with no docs/tests)
+# Decision: Code up v1 as plugin-level only
 # and a property that lists out directory
 # Namespaced directory will be created on init
+# DEV: If someone wants low-level access, they have the directory to write to ;)
 
 
 class TestSublimeHarness(unittest.TestCase):
