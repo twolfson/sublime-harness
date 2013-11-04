@@ -26,9 +26,6 @@ class Harness(object):
             os.makedirs(self.directory)
 
     def install_command_launcher(self):
-        # Guarantee the plugin test dir exists
-        self.ensure_directory()
-
         # If command launcher doesn't exist, copy it
         # TODO: Verify this works in Windows
         orig_command_path = os.path.join(__dir__, 'launchers/command.py')
@@ -53,9 +50,6 @@ class Harness(object):
 
 
     def install_init_launcher(self):
-        # Guarantee the plugin test dir exists
-        self.ensure_directory()
-
         # Clean up any past instances of init launcher
         self.remove_init_launcher()
 
@@ -64,7 +58,6 @@ class Harness(object):
         orig_command_path = os.path.join(__dir__, 'launchers/init.py')
         shutil.copyfile(orig_command_path, self.init_launcher_path)
 
-    @classmethod
     def remove_init_launcher(self):
         # If the init launcher exists, delete it
         if os.path.exists(self.init_launcher_path):
@@ -72,7 +65,9 @@ class Harness(object):
 
     def __init__(self):
         # TODO: Require namespace for harness directory
+        # Guarantee the harness directory exists
         self.directory = os.path.join(sublime_info.get_package_directory(), 'sublime-harness-tmp')
+        self.ensure_directory()
 
         self.init_launcher_path = os.path.join(self.directory, 'init_launcher.py')
 
@@ -95,9 +90,6 @@ class Harness(object):
         # If there was no run function, complain and leave
         if not has_run_fn:
             raise Exception('"run" function was not found in "plugin_str": %s' % plugin_str)
-
-        # Guarantee there is an output directory
-        self.ensure_directory()
 
         # Output test to directory
         f = open(os.path.join(self.directory, 'plugin.py'), 'w')

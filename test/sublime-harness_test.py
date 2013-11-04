@@ -25,11 +25,6 @@ sublime-harness
     will throw if code does not contain a `run` method
 """
 
-# Decision: Code up v1 as plugin-level only
-# and a property that lists out directory
-# Namespaced directory will be created on init
-# DEV: If someone wants low-level access, they have the directory to write to ;)
-
 
 class TestSublimeHarness(unittest.TestCase):
     def test_running_arbitrary_python(self):
