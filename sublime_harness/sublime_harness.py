@@ -83,12 +83,6 @@ class Harness(object):
         # Save defaults
         self.close_called = True
 
-    def __enter__(self):
-        self.run()
-
-    def __exit__(self, type, value, traceback):
-        self.close()
-
     def run(self):
         # TODO: Add safeguard for only running once at a time
 
