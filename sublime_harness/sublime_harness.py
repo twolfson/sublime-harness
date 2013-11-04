@@ -20,6 +20,7 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 
 class Harness(object):
     plugin_dir = os.path.join(sublime_info.get_package_directory(), 'sublime-harness-tmp')
+    _sublime_command = sublime_info.get_sublime_path()
 
     @classmethod
     def ensure_plugin_dir(cls):
@@ -34,8 +35,8 @@ class Harness(object):
 
         # If command launcher doesn't exist, copy it
         # TODO: Verify this works in Windows
-        orig_command_path = os.path.join(__dir__, '/launchers/command.py')
-        dest_command_path = os.path.join(cls.plugin_dir, '/command_launcher.py')
+        orig_command_path = os.path.join(__dir__, 'launchers/command.py')
+        dest_command_path = os.path.join(cls.plugin_dir, 'command_launcher.py')
         if not os.path.exists(dest_command_path):
             shutil.copyfile(orig_command_path, dest_command_path)
         else:
@@ -66,7 +67,7 @@ class Harness(object):
 
         # Install a new one
         # TODO: Verify this doesn't have any double invocation consequences
-        orig_command_path = os.path.join(__dir__, '/launchers/init.py')
+        orig_command_path = os.path.join(__dir__, 'launchers/init.py')
         shutil.copyfile(orig_command_path, cls.init_launcher_path)
 
     @classmethod
@@ -85,7 +86,7 @@ class Harness(object):
     def __enter__(self):
         self.run()
 
-    def __exit__(self):
+    def __exit__(self, type, value, traceback):
         self.close()
 
     def run(self):
@@ -95,7 +96,7 @@ class Harness(object):
         self.ensure_plugin_dir()
 
         # Output test to directory
-        f = open(os.path.join(self.plugin_dir, '/plugin.py'), 'w')
+        f = open(os.path.join(self.plugin_dir, 'plugin.py'), 'w')
         f.write(self.plugin_str)
         f.close()
 
