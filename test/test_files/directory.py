@@ -1,3 +1,6 @@
+import os
+import sublime
+
 try :
     from hello import hello
 except:
@@ -6,3 +9,6 @@ except:
 def run():
     with open('%s', 'w') as f:
         f.write(hello)
+
+    if os.env.get('SUBLIME_AUTO_KILL'):
+        sublime.run_command('exit')
