@@ -12,9 +12,17 @@ sublime-harness
         executes the code
     running Sublime Text specific code  # open a view, write content, get content, write fetched content to disk
         executes within Sublime Text
+        # Edge case
         when Sublime Text is launched again
             does not execute the code twice
+
+# Intermediate test
+sublime-harness
     runs in the `directory`  # write files to `directory`, assert they can be loaded from
+
+# Edge case
+sublime-harness
+    will throw if code does not contain a `run` method
 """
 
 # Decision: Code up v1 as plugin-level only
