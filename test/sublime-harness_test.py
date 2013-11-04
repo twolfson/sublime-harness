@@ -5,6 +5,9 @@ import unittest
 
 from sublime_harness import sublime_harness
 
+# Set up constants
+__dir__ = os.path.dirname(os.path.abspath(__file__))
+
 # Outline tests
 """
 sublime-harness
@@ -31,10 +34,7 @@ class TestSublimeHarness(unittest.TestCase):
         # Generate and run our temporary task
         output_file = tempfile.mkstemp()[1]
         harness = sublime_harness.Harness()
-        plugin_str = """
-def run():
-    with open('%s', 'w') as f:
-        f.write('hello world')""" % output_file
+        plugin_str = open(__dir__ + '/test_files/arbitrary.py').read() % output_file
         harness.run(plugin_str)
 
         # Wait for the output file to exist
@@ -43,28 +43,25 @@ def run():
 
         # Grab the file output
         with open(output_file) as f:
-            self.assertEqual('hello world', f.read())
+            self.assertIn('hello world', f.read())
 
         # Remove the plugin
-        # TODO: plugin_runner isn't making much sense right now...
         harness.close()
 
-    @unittest.skip('hai')
     def test_running_st_python(self):
         # Generate and run our temporary task
         output_file = tempfile.mkstemp()[1]
-        write_to_disk = """
-with open(%s, 'w') as f:
-    f.write('hello world')""" % output_file
-        harness = sublime_harness.Harness(write_to_disk)
-        harness.run()
+        harness = sublime_harness.Harness()
+        plugin_str = open(__dir__ + '/test_files/st_python.py').read() % output_file
+        harness.run(plugin_str)
 
-        # Wait for the file to exist
-        while True:
-            if os.path.exists(output_file):
-                break
+        # Wait for the output file to exist
+        while (not os.path.exists(output_file) or os.stat(output_file).st_size == 0):
             time.sleep(0.1)
+
+        # Grab the file output
+        with open(output_file) as f:
+            self.assertIn('Packages', f.read())
 
         # Remove the plugin
         harness.close()
-
