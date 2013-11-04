@@ -1,7 +1,8 @@
 import os
 import tempfile
 import time
-from unittest import TestCase
+import unittest
+
 from sublime_harness import sublime_harness
 
 # Outline tests
@@ -16,8 +17,30 @@ sublime-harness
 """
 
 
-class TestSublimeHarness(TestCase):
+class TestSublimeHarness(unittest.TestCase):
     def test_running_arbitrary_python(self):
+        # Generate and run our temporary task
+        output_file = tempfile.mkstemp()[1]
+        write_to_disk = """
+with open('%s', 'w') as f:
+    f.write('hello world')""" % output_file
+        harness = sublime_harness.Harness(write_to_disk)
+        harness.run()
+
+        # Wait for the output file to exist
+        while (not os.path.exists(output_file) or os.stat(output_file).st_size == 0):
+            time.sleep(0.1)
+
+        # Grab the file output
+        with open(output_file) as f:
+            self.assertEqual('hello world', f.read())
+
+        # Remove the plugin
+        # TODO: plugin_runner isn't making much sense right now...
+        harness.close()
+
+    @unittest.skip('hai')
+    def test_running_st_python(self):
         # Generate and run our temporary task
         output_file = tempfile.mkstemp()[1]
         write_to_disk = """
@@ -34,3 +57,4 @@ with open(%s, 'w') as f:
 
         # Remove the plugin
         harness.close()
+
