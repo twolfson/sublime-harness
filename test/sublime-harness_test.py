@@ -88,5 +88,29 @@ class TestSublimeHarness(unittest.TestCase):
         os.unlink(dest_hello_path)
 
     def test_assert_run(self):
-        assert_run_plugin = open(__dir__ + '/test_files/assert_run.py').read()
+        assert_run_plugin = open(__dir__ + '/test_files/missing_run.py').read()
         self.assertRaises(Exception, self.harness.run, assert_run_plugin)
+
+    def test_prevent_multiple_runs(self):
+        # Generate and run our temporary task
+        plugin_str = open(__dir__ + '/test_files/timestamp.py').read() % self.output_file
+        self.harness.run(plugin_str)
+        self._wait_for_output_file()
+
+        # Grab the file output
+        f = open(self.output_file)
+        timestamp = f.read()
+        f.close()
+        self.assertNotEqual(timestamp, '')
+
+        # Remove the plugin
+        self.harness.close()
+
+        # Launch sublime again
+        # subprocess.call([self.sublime_path])
+
+        # Wait for a bit
+
+        # Kill Sublime
+
+        # Assert file has not changed
