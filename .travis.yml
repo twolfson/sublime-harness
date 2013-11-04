@@ -19,6 +19,7 @@ install:
 
 script:
   # Run our tests
+  - export SUBLIME_AUTO_KILL=TRUE
   - ./test.sh
 
 notifications:
