@@ -1,4 +1,5 @@
 # Load in core dependencies
+import ast
 import os
 import shutil
 import subprocess
@@ -80,6 +81,20 @@ class Harness(object):
 
     def run(self, plugin_str):
         # TODO: Add safeguard for only running once at a time
+
+        # Assert we are provided a run function
+        has_run_fn = False
+        for node in ast.iter_child_nodes(ast.parse(plugin_str)):
+            try:
+                if (node.__class__.__name__ == 'FunctionDef' and node.name == 'run'):
+                    has_run_fn = True
+                    break
+            except:
+                pass
+
+        # If there was no run function, complain and leave
+        if not has_run_fn:
+            raise Exception('"run" function was not found in "plugin_str": %s' % plugin_str)
 
         # Guarantee there is an output directory
         self.ensure_directory()

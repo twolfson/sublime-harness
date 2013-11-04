@@ -37,8 +37,10 @@ class TestSublimeHarness(unittest.TestCase):
         output_file = tempfile.mkstemp()[1]
         harness = sublime_harness.Harness()
         plugin_str = """
-with open('%s', 'w') as f:
-    f.write('hello world')""" % output_file
+def run():
+    with open('%s', 'w') as f:
+        f.write('hello world')
+run()""" % output_file
         harness.run(plugin_str)
 
         # Wait for the output file to exist
