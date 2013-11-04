@@ -88,4 +88,5 @@ class TestSublimeHarness(unittest.TestCase):
         os.unlink(dest_hello_path)
 
     def test_assert_run(self):
-        self.assertRaises(Exception, self.harness.run, open(__dir__ + '/test_files/assert_run.py').read())
+        assert_run_plugin = open(__dir__ + '/test_files/assert_run.py').read()
+        self.assertRaises(Exception, self.harness.run, assert_run_plugin)
