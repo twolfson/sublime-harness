@@ -20,7 +20,7 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 
 class Harness(object):
     plugin_dir = os.path.join(sublime_info.get_package_directory(), 'sublime-harness-tmp')
-    _sublime_command = sublime_info.get_sublime_path()
+    sublime_path = sublime_info.get_sublime_path()
 
     @classmethod
     def ensure_plugin_dir(cls):
@@ -76,14 +76,11 @@ class Harness(object):
         if os.path.exists(cls.init_launcher_path):
             os.unlink(cls.init_launcher_path)
 
-    def __init__(self, plugin_str):
-        # Save the plugin_str for later
-        self.plugin_str = plugin_str
-
+    def __init__(self):
         # Save defaults
         self.close_called = True
 
-    def run(self):
+    def run(self, plugin_str):
         # TODO: Add safeguard for only running once at a time
 
         # Guarantee there is an output directory
@@ -91,7 +88,7 @@ class Harness(object):
 
         # Output test to directory
         f = open(os.path.join(self.plugin_dir, 'plugin.py'), 'w')
-        f.write(self.plugin_str)
+        f.write(plugin_str)
         f.close()
 
         # TODO: These commands should go in a launching harness
@@ -110,7 +107,8 @@ class Harness(object):
             # TODO: This could be subl, sublime_text, or other
             sublime_is_running = False
             for process in ps_list.split('\n'):
-                if self._sublime_command in process:
+                # TODO: Pretty sure this won't work as it is a full path (not listed in `ps`)
+                if self.sublime_path in process:
                     sublime_is_running = True
                     break
 
@@ -121,8 +119,8 @@ class Harness(object):
                 self.install_init_launcher()
 
                 # and launch sublime_text
-                logger.info('Launching %s via init' % self._sublime_command)
-                subprocess.call([self._sublime_command])
+                logger.info('Launching %s via init' % self.sublime_path)
+                subprocess.call([self.sublime_path])
 
                 # Mark the init to prevent double launch
                 running_via_init = True

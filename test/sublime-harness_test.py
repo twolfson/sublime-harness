@@ -26,11 +26,11 @@ class TestSublimeHarness(unittest.TestCase):
     def test_running_arbitrary_python(self):
         # Generate and run our temporary task
         output_file = tempfile.mkstemp()[1]
-        write_to_disk = """
+        harness = sublime_harness.Harness()
+        plugin_str = """
 with open('%s', 'w') as f:
     f.write('hello world')""" % output_file
-        harness = sublime_harness.Harness(write_to_disk)
-        harness.run()
+        harness.run(plugin_str)
 
         # Wait for the output file to exist
         while (not os.path.exists(output_file) or os.stat(output_file).st_size == 0):
