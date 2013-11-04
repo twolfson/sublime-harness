@@ -39,8 +39,7 @@ class TestSublimeHarness(unittest.TestCase):
         plugin_str = """
 def run():
     with open('%s', 'w') as f:
-        f.write('hello world')
-run()""" % output_file
+        f.write('hello world')""" % output_file
         harness.run(plugin_str)
 
         # Wait for the output file to exist
