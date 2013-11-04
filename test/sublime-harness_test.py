@@ -1,4 +1,5 @@
 import os
+import shutil
 import tempfile
 import time
 import unittest
@@ -67,3 +68,21 @@ class TestSublimeHarness(unittest.TestCase):
 
         # Remove the plugin
         self.harness.close()
+
+    def test_run_in_directory(self):
+        # Copy over a local file to the directory
+        dest_hello_path = self.harness.directory + '/hello.py'
+        shutil.copy(__dir__ + '/test_files/hello.py', dest_hello_path)
+
+        # Generate and run our temporary task
+        plugin_str = open(__dir__ + '/test_files/directory.py').read() % self.output_file
+        self.harness.run(plugin_str)
+        self._wait_for_output_file()
+
+        # Grab the file output
+        with open(self.output_file) as f:
+            self.assertEqual('world', f.read())
+
+        # Remove the plugin and our file
+        self.harness.close()
+        os.unlink(dest_hello_path)
