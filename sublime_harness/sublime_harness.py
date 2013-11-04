@@ -19,19 +19,19 @@ class Harness(object):
     sublime_path = sublime_info.get_sublime_path()
     sublime_command = os.path.basename(sublime_path)
 
-    def ensure_harness_dir(self):
-        # If the plugin test directory does not exist, create it
-        if not os.path.exists(self.harness_dir):
-            os.makedirs(self.harness_dir)
+    def ensure_directory(self):
+        # If the harness directory does not exist, create it
+        if not os.path.exists(self.directory):
+            os.makedirs(self.directory)
 
     def install_command_launcher(self):
         # Guarantee the plugin test dir exists
-        self.ensure_harness_dir()
+        self.ensure_directory()
 
         # If command launcher doesn't exist, copy it
         # TODO: Verify this works in Windows
         orig_command_path = os.path.join(__dir__, 'launchers/command.py')
-        dest_command_path = os.path.join(self.harness_dir, 'command_launcher.py')
+        dest_command_path = os.path.join(self.directory, 'command_launcher.py')
         if not os.path.exists(dest_command_path):
             shutil.copyfile(orig_command_path, dest_command_path)
         else:
@@ -53,7 +53,7 @@ class Harness(object):
 
     def install_init_launcher(self):
         # Guarantee the plugin test dir exists
-        self.ensure_harness_dir()
+        self.ensure_directory()
 
         # Clean up any past instances of init launcher
         self.remove_init_launcher()
@@ -71,9 +71,9 @@ class Harness(object):
 
     def __init__(self):
         # TODO: Require namespace for harness directory
-        self.harness_dir = os.path.join(sublime_info.get_package_directory(), 'sublime-harness-tmp')
+        self.directory = os.path.join(sublime_info.get_package_directory(), 'sublime-harness-tmp')
 
-        self.init_launcher_path = os.path.join(self.harness_dir, 'init_launcher.py')
+        self.init_launcher_path = os.path.join(self.directory, 'init_launcher.py')
 
         # Save defaults
         self.close_called = True
@@ -82,10 +82,10 @@ class Harness(object):
         # TODO: Add safeguard for only running once at a time
 
         # Guarantee there is an output directory
-        self.ensure_harness_dir()
+        self.ensure_directory()
 
         # Output test to directory
-        f = open(os.path.join(self.harness_dir, 'plugin.py'), 'w')
+        f = open(os.path.join(self.directory, 'plugin.py'), 'w')
         f.write(plugin_str)
         f.close()
 
