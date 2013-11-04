@@ -4,8 +4,12 @@ from sublime_harness import sublime_harness
 # Outline tests
 """
 sublime-harness
-    can run arbitrary Python (write to disk)
-    can manipulate Sublime Text (open a view, write content, get content, write fetched content to disk)
+    running arbitrary Python (write to disk)
+        executes the code
+    running Sublime Text specific code (open a view, write content, get content, write fetched content to disk)
+        executes within Sublime Text
+        when Sublime Text is launched again
+            does not execute the code twice
 """
 
 
