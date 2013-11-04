@@ -30,38 +30,40 @@ Sublime Text
 
 
 class TestSublimeHarness(unittest.TestCase):
-    def test_running_arbitrary_python(self):
-        # Generate and run our temporary task
-        output_file = tempfile.mkstemp()[1]
-        harness = sublime_harness.Harness()
-        plugin_str = open(__dir__ + '/test_files/arbitrary.py').read() % output_file
-        harness.run(plugin_str)
+    def setUp(self):
+        self.output_file = tempfile.mkstemp()[1]
+        self.harness = sublime_harness.Harness()
 
-        # Wait for the output file to exist
+    def tearDown(self):
+        os.unlink(self.output_file)
+
+    def _wait_for_output_file(self):
+        output_file = self.output_file
         while (not os.path.exists(output_file) or os.stat(output_file).st_size == 0):
             time.sleep(0.1)
 
+    def test_running_arbitrary_python(self):
+        # Generate and run our temporary task
+        plugin_str = open(__dir__ + '/test_files/arbitrary.py').read() % self.output_file
+        self.harness.run(plugin_str)
+        self._wait_for_output_file()
+
         # Grab the file output
-        with open(output_file) as f:
+        with open(self.output_file) as f:
             self.assertIn('hello world', f.read())
 
         # Remove the plugin
-        harness.close()
+        self.harness.close()
 
     def test_running_st_python(self):
         # Generate and run our temporary task
-        output_file = tempfile.mkstemp()[1]
-        harness = sublime_harness.Harness()
-        plugin_str = open(__dir__ + '/test_files/st_python.py').read() % output_file
-        harness.run(plugin_str)
-
-        # Wait for the output file to exist
-        while (not os.path.exists(output_file) or os.stat(output_file).st_size == 0):
-            time.sleep(0.1)
+        plugin_str = open(__dir__ + '/test_files/st_python.py').read() % self.output_file
+        self.harness.run(plugin_str)
+        self._wait_for_output_file()
 
         # Grab the file output
-        with open(output_file) as f:
+        with open(self.output_file) as f:
             self.assertIn('Packages', f.read())
 
         # Remove the plugin
-        harness.close()
+        self.harness.close()
