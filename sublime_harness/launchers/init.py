@@ -12,7 +12,7 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 plugin_host_loaded = False
 
 
-class SublimePluginTestTmpCommand(sublime_plugin.ApplicationCommand):
+class SublimeHarnessInitLauncherNamespaceCommand(sublime_plugin.ApplicationCommand):
     def run(self):
         global plugin_host_loaded
         plugin_host_loaded = True
@@ -42,7 +42,8 @@ class SublimePluginTestTmpCommand(sublime_plugin.ApplicationCommand):
 
 def run():
     # Attempt to run our plugin
-    sublime.run_command('sublime_plugin_test_tmp')
+    # TODO: Use real namespace
+    sublime.run_command('sublime_harness_init_launcher_namespace')
 
     # If it did not run (plugin_host has not loaded), then try again in 100ms
     global plugin_host_loaded

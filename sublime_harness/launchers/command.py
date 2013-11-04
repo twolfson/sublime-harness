@@ -8,7 +8,7 @@ import sublime_plugin
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 
 
-class SublimePluginTestTmpCommand(sublime_plugin.ApplicationCommand):
+class SublimeHarnessCommandLauncherNamespaceCommand(sublime_plugin.ApplicationCommand):
     def run(self):
         # On every run, re-import the test class
         # DEV: Sublime Text does not recognize changes to command.py.

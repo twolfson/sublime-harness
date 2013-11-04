@@ -140,7 +140,14 @@ class Harness(object):
         # Save running_via_init info
         self.running_via_init = running_via_init
 
-        # TODO: What happened to the damn run command -_-;;
+        # If we are not running via init
+        if not running_via_init:
+            # Guarantee the command launcher exists
+            self.install_command_launcher()
+
+            # Invoke the launcher command
+            # TODO: Use real namespace
+            'sublime_harness_command_launcher_namespace'
 
         # Mark close as not called
         self.close_called = False
