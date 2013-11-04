@@ -12,32 +12,26 @@ from .logger import logger
 # Set up constants
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 
-# TODO: We are going to need a mechanism for utils
-# (e.g. get temporary dir, copy dir, run script in file)
-
 # TODO: init launcher needs that file safeguard to deal with people who don't clean up
 
 
 class Harness(object):
-    plugin_dir = os.path.join(sublime_info.get_package_directory(), 'sublime-harness-tmp')
     sublime_path = sublime_info.get_sublime_path()
     sublime_command = os.path.basename(sublime_path)
 
-    @classmethod
-    def ensure_plugin_dir(cls):
+    def ensure_harness_dir(self):
         # If the plugin test directory does not exist, create it
-        if not os.path.exists(cls.plugin_dir):
-            os.makedirs(cls.plugin_dir)
+        if not os.path.exists(self.harness_dir):
+            os.makedirs(self.harness_dir)
 
-    @classmethod
-    def install_command_launcher(cls):
+    def install_command_launcher(self):
         # Guarantee the plugin test dir exists
-        cls.ensure_plugin_dir()
+        self.ensure_harness_dir()
 
         # If command launcher doesn't exist, copy it
         # TODO: Verify this works in Windows
         orig_command_path = os.path.join(__dir__, 'launchers/command.py')
-        dest_command_path = os.path.join(cls.plugin_dir, 'command_launcher.py')
+        dest_command_path = os.path.join(self.harness_dir, 'command_launcher.py')
         if not os.path.exists(dest_command_path):
             shutil.copyfile(orig_command_path, dest_command_path)
         else:
@@ -56,28 +50,31 @@ class Harness(object):
                 # and notify the user we must restart Sublime
                 raise Exception('We had to update the sublime-harness plugin. You must close or restart Sublime to continue testing.')
 
-    init_launcher_path = os.path.join(plugin_dir, 'init_launcher.py')
 
-    @classmethod
-    def install_init_launcher(cls):
+    def install_init_launcher(self):
         # Guarantee the plugin test dir exists
-        cls.ensure_plugin_dir()
+        self.ensure_harness_dir()
 
         # Clean up any past instances of init launcher
-        cls.remove_init_launcher()
+        self.remove_init_launcher()
 
         # Install a new one
         # TODO: Verify this doesn't have any double invocation consequences
         orig_command_path = os.path.join(__dir__, 'launchers/init.py')
-        shutil.copyfile(orig_command_path, cls.init_launcher_path)
+        shutil.copyfile(orig_command_path, self.init_launcher_path)
 
     @classmethod
-    def remove_init_launcher(cls):
+    def remove_init_launcher(self):
         # If the init launcher exists, delete it
-        if os.path.exists(cls.init_launcher_path):
-            os.unlink(cls.init_launcher_path)
+        if os.path.exists(self.init_launcher_path):
+            os.unlink(self.init_launcher_path)
 
     def __init__(self):
+        # TODO: Require namespace for harness directory
+        self.harness_dir = os.path.join(sublime_info.get_package_directory(), 'sublime-harness-tmp')
+
+        self.init_launcher_path = os.path.join(self.harness_dir, 'init_launcher.py')
+
         # Save defaults
         self.close_called = True
 
@@ -85,10 +82,10 @@ class Harness(object):
         # TODO: Add safeguard for only running once at a time
 
         # Guarantee there is an output directory
-        self.ensure_plugin_dir()
+        self.ensure_harness_dir()
 
         # Output test to directory
-        f = open(os.path.join(self.plugin_dir, 'plugin.py'), 'w')
+        f = open(os.path.join(self.harness_dir, 'plugin.py'), 'w')
         f.write(plugin_str)
         f.close()
 
