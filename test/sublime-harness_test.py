@@ -23,7 +23,7 @@ sublime-harness
 
 # Edge case
 sublime-harness
-    will throw if code does not contain a `run` method
+    will raise if code does not contain a `run` method
 Sublime Text
     running after running a sublime-harness
         does not re-execute harness code
@@ -86,3 +86,6 @@ class TestSublimeHarness(unittest.TestCase):
         # Remove the plugin and our file
         self.harness.close()
         os.unlink(dest_hello_path)
+
+    def test_assert_run(self):
+        self.assertRaises(Exception, self.harness.run, open(__dir__ + '/test_files/assert_run.py').read())
