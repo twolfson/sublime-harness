@@ -17,8 +17,7 @@ class TestSublimeHarness(TestCase):
     def test_run_python(self):
         """sublime-harness can run arbitrary Python"""
         write_to_disk = """
-        with open('/tmp/harness') as f:
-            f.write('hello world')
-        """
+with open('/tmp/harness', 'w') as f:
+    f.write('hello world')"""
         with sublime_harness.Harness(write_to_disk):
             pass
