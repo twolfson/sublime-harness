@@ -3,6 +3,9 @@ import shutil
 import tempfile
 import time
 import unittest
+import subprocess
+
+import sublime_info
 
 from sublime_harness import sublime_harness
 
@@ -99,18 +102,24 @@ class TestSublimeHarness(unittest.TestCase):
 
         # Grab the file output
         f = open(self.output_file)
-        timestamp = f.read()
+        orignal_timestamp = f.read()
         f.close()
-        self.assertNotEqual(timestamp, '')
+        self.assertNotEqual(orignal_timestamp, '')
 
         # Remove the plugin
         self.harness.close()
 
         # Launch sublime again
-        # subprocess.call([self.sublime_path])
+        child = subprocess.Popen([sublime_info.get_sublime_path()])
 
         # Wait for a bit
+        time.sleep(1)
 
         # Kill Sublime
+        child.kill()
 
         # Assert file has not changed
+        f = open(self.output_file)
+        new_timestamp = f.read()
+        f.close()
+        self.assertEqual(orignal_timestamp, new_timestamp)
