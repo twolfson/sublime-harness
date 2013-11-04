@@ -14,6 +14,7 @@ sublime-harness
         executes within Sublime Text
         when Sublime Text is launched again
             does not execute the code twice
+    runs in the `directory`  # write files to `directory`, assert they can be loaded from
 """
 
 # Decision: Code up v1 as plugin-level only
