@@ -23,8 +23,8 @@ class SublimeHarnessInitLauncherNamespaceCommand(sublime_plugin.ApplicationComma
         plugin_dict = {
             '__dir__': __dir__,
             '__file__': filepath,
-            '__name__': '%s.plugin' % __package__,
-            '__package__': __package__,
+            '__name__': 'plugin',
+            '__package__': None,
             '__builtins__': __builtins__,
         }
 
