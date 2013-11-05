@@ -82,33 +82,19 @@ class TestSublimeHarness(unittest.TestCase):
         shutil.copy(__dir__ + '/test_files/hello.py', dest_hello_path)
 
         # Generate and run our temporary task
+        print 'output'
         plugin_str = open(__dir__ + '/test_files/directory.py').read() % self.output_file
         self.harness.run(plugin_str)
+        print 'waiting'
         self._wait_for_output_file()
 
         # Grab the file output
+        print 'assertion'
         with open(self.output_file) as f:
             self.assertEqual('world', f.read())
 
         # Remove the plugin and our file
-        self.harness.close()
-        os.unlink(dest_hello_path)
-
-    def test_run_in_directory2(self):
-        # Copy over a local file to the directory
-        dest_hello_path = self.harness.directory + '/hello.py'
-        shutil.copy(__dir__ + '/test_files/hello.py', dest_hello_path)
-
-        # Generate and run our temporary task
-        plugin_str = open(__dir__ + '/test_files/directory.py').read() % self.output_file
-        self.harness.run(plugin_str)
-        self._wait_for_output_file()
-
-        # Grab the file output
-        with open(self.output_file) as f:
-            self.assertEqual('world', f.read())
-
-        # Remove the plugin and our file
+        print 'cleanup'
         self.harness.close()
         os.unlink(dest_hello_path)
 
@@ -116,7 +102,6 @@ class TestSublimeHarness(unittest.TestCase):
         assert_run_plugin = open(__dir__ + '/test_files/missing_run.py').read()
         self.assertRaises(Exception, self.harness.run, assert_run_plugin)
 
-    @unittest.skip('Another trial and error for Travis CI')
     def test_prevent_multiple_runs(self):
         # Generate and run our temporary task
         plugin_str = open(__dir__ + '/test_files/timestamp.py').read() % self.output_file
