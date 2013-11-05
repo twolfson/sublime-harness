@@ -83,8 +83,26 @@ class TestSublimeHarness(unittest.TestCase):
 
         # Generate and run our temporary task
         print 'output'
+        child = subprocess.Popen(['ps', 'ax'], stdout=subprocess.PIPE)
+        ps_list = str(child.stdout.read())
+        print 'BEFORE', ps_list
+
+        # Kill the child
+        child.kill()
         plugin_str = open(__dir__ + '/test_files/directory.py').read() % self.output_file
         self.harness.run(plugin_str)
+        child = subprocess.Popen(['ps', 'ax'], stdout=subprocess.PIPE)
+        ps_list = str(child.stdout.read())
+        print 'AFTER', ps_list
+
+        # Kill the child
+        child.kill()
+
+
+        child = subprocess.Popen([sublime_info.get_sublime_path(), '--wait'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print 'STDOUT', str(child.stdout.read())
+        print 'STDERR', str(child.stderr.read())
+
         print 'waiting'
         self._wait_for_output_file()
 
