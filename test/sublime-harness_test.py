@@ -131,6 +131,7 @@ class TestSublimeHarness(unittest.TestCase):
         # Kill Sublime
         print 'killing'
         child.kill()
+        time.sleep(0.2)
 
         # Assert file has not changed
         print 'asserting'
