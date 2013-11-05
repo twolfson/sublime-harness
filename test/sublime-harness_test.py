@@ -39,7 +39,9 @@ class TestSublimeHarness(unittest.TestCase):
         self.harness = sublime_harness.Harness()
 
     def tearDown(self):
-        os.unlink(self.output_file)
+        pass
+        # TODO: Re-enable this
+        # os.unlink(self.output_file)
 
     def _wait_for_output_file(self):
         output_file = self.output_file
