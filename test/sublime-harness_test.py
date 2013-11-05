@@ -82,19 +82,15 @@ class TestSublimeHarness(unittest.TestCase):
         shutil.copy(__dir__ + '/test_files/hello.py', dest_hello_path)
 
         # Generate and run our temporary task
-        print 'output'
         plugin_str = open(__dir__ + '/test_files/directory.py').read() % self.output_file
         self.harness.run(plugin_str)
-        print 'waiting'
         self._wait_for_output_file()
 
         # Grab the file output
-        print 'assertion'
         with open(self.output_file) as f:
             self.assertEqual('world', f.read())
 
         # Remove the plugin and our file
-        print 'cleanup'
         self.harness.close()
         os.unlink(dest_hello_path)
 
@@ -117,36 +113,18 @@ class TestSublimeHarness(unittest.TestCase):
         # Remove the plugin
         self.harness.close()
 
-        child = subprocess.Popen(['ps', 'ax'], stdout=subprocess.PIPE)
-        ps_list = str(child.stdout.read())
-        print 'BEFORE', ps_list
-        child.kill()
-
         # Launch sublime again
-        # TODO: This won't run with Travis since it is launching synchronously =/
-        # TODO: We should be able to reproduce this one within Vagrant
-        print 'launching subl'
-        child = subprocess.Popen(['/opt/sublime_text_2/sublime_text', '--class=sublime-text-2'])
+        # TODO: This is very much non-ideal... I feel like sublime-info should be able to grab this =(
         # child = subprocess.Popen([sublime_info.get_sublime_path()])
-        print 'child id', child.pid
-        print 'after launch'
+        child = subprocess.Popen(['/opt/sublime_text_2/sublime_text', '--class=sublime-text-2'])
 
         # Wait for a bit
-        print 'sleeping'
         time.sleep(1)
 
         # Kill Sublime
-        print 'killing'
-        print child.kill()
-        time.sleep(0.2)
-
-        child = subprocess.Popen(['ps', 'ax'], stdout=subprocess.PIPE)
-        ps_list = str(child.stdout.read())
-        print 'AFTER', ps_list
         child.kill()
 
         # Assert file has not changed
-        print 'asserting'
         f = open(self.output_file)
         new_timestamp = f.read()
         f.close()
