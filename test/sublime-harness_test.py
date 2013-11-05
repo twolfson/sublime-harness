@@ -135,21 +135,21 @@ class TestSublimeHarness(unittest.TestCase):
         # Remove the plugin
         self.harness.close()
 
-        # Launch sublime again
-        # TODO: This won't run with Travis since it is launching synchronously =/
-        # TODO: We should be able to reproduce this one within Vagrant
-        print 'launching subl'
-        child = subprocess.Popen([sublime_info.get_sublime_path()])
-        print 'after launch'
+        # # Launch sublime again
+        # # TODO: This won't run with Travis since it is launching synchronously =/
+        # # TODO: We should be able to reproduce this one within Vagrant
+        # print 'launching subl'
+        # child = subprocess.Popen([sublime_info.get_sublime_path()])
+        # print 'after launch'
 
-        # Wait for a bit
-        print 'sleeping'
-        time.sleep(1)
+        # # Wait for a bit
+        # print 'sleeping'
+        # time.sleep(1)
 
-        # Kill Sublime
-        print 'killing'
-        child.kill()
-        time.sleep(0.2)
+        # # Kill Sublime
+        # print 'killing'
+        # child.kill()
+        # time.sleep(0.2)
 
         # Assert file has not changed
         print 'asserting'
