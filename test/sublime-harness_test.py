@@ -111,15 +111,21 @@ class TestSublimeHarness(unittest.TestCase):
         self.harness.close()
 
         # Launch sublime again
+        # TODO: This won't run with Travis since it is launching synchronously =/
+        print 'launching subl'
         child = subprocess.Popen([sublime_info.get_sublime_path()])
+        print 'after launch'
 
         # Wait for a bit
+        print 'sleeping'
         time.sleep(1)
 
         # Kill Sublime
+        print 'killing'
         child.kill()
 
         # Assert file has not changed
+        print 'asserting'
         f = open(self.output_file)
         new_timestamp = f.read()
         f.close()
