@@ -32,6 +32,7 @@ Sublime Text
         does not re-execute harness code
 
 # TODO: If there is an error launching Sublime Text, proliferate it
+# Just not stderr (fucking headless + xvfb)
 """
 
 
