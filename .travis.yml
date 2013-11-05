@@ -17,12 +17,17 @@ install:
   # Install dev requirements
   - pip install -r requirements-dev.txt
 
+before_script:
+  # Generate a screen buffer to collect Sublime Text window
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+
 script:
   # Run our tests
   # TODO: Verify via vagrant wtf is going on with Travis.
   # TODO: Verify this export statement works with tests
-  - subl --wait
-  # - SUBLIME_AUTO_KILL=TRUE ./test.sh
+  - export SUBLIME_AUTO_KILL=TRUE
+  - ./test.sh
 
 notifications:
   email: false
