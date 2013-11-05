@@ -98,7 +98,6 @@ class TestSublimeHarness(unittest.TestCase):
         assert_run_plugin = open(__dir__ + '/test_files/missing_run.py').read()
         self.assertRaises(Exception, self.harness.run, assert_run_plugin)
 
-    @unittest.skip('Another trial and error for Travis CI')
     def test_prevent_multiple_runs(self):
         # Generate and run our temporary task
         plugin_str = open(__dir__ + '/test_files/timestamp.py').read() % self.output_file
