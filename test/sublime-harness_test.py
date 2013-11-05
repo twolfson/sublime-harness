@@ -63,8 +63,8 @@ class TestSublimeHarness(unittest.TestCase):
         with open(self.output_file) as f:
             self.assertIn('hello world', f.read())
 
-        # Remove the plugin
-        self.harness.close()
+        # # Remove the plugin
+        # self.harness.close()
 
     @unittest.skip('Disabled for Travis CI')
     def test_running_st_python(self):
