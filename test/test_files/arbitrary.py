@@ -1,7 +1,9 @@
 import os
+import time
 import sublime
 
 def run():
+    time.sleep(1)
     f = open('%s', 'w')
     f.write('hello world')
     f.close()
