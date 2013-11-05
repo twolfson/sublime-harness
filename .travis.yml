@@ -21,7 +21,7 @@ script:
   # Run our tests
   # TODO: Verify via vagrant wtf is going on with Travis.
   # TODO: Verify this export statement works with tests
-  - sublime_text --wait
+  - subl --wait
   # - SUBLIME_AUTO_KILL=TRUE ./test.sh
 
 notifications:
