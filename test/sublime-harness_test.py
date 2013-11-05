@@ -47,6 +47,12 @@ class TestSublimeHarness(unittest.TestCase):
         while (not os.path.exists(output_file) or os.stat(output_file).st_size == 0):
             print 'looping and waiting', os.path.exists(output_file), os.stat(output_file).st_size
             time.sleep(0.1)
+            child = subprocess.Popen(['ps', 'ax'], stdout=subprocess.PIPE)
+            ps_list = str(child.stdout.read())
+            print ps_list
+
+            # Kill the child
+            child.kill()
 
     def test_running_arbitrary_python(self):
         # TODO: This test is useless due to sublime self-kill
