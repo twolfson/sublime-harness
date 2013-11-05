@@ -144,6 +144,7 @@ class Harness(object):
 
             # Invoke the launcher command
             # TODO: Use real namespace
+            print 'launching via launcher'
             logger.info('Launching %s via --command' % self.sublime_path)
             subprocess.call([self.sublime_path, '--command', 'sublime_harness_command_launcher_namespace'])
 

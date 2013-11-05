@@ -43,7 +43,9 @@ class TestSublimeHarness(unittest.TestCase):
 
     def _wait_for_output_file(self):
         output_file = self.output_file
+        print 'waiting for file'
         while (not os.path.exists(output_file) or os.stat(output_file).st_size == 0):
+            print 'looping and waiting', os.path.exists(output_file), os.stat(output_file).st_size
             time.sleep(0.1)
 
     def test_running_arbitrary_python(self):
