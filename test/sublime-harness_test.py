@@ -112,6 +112,7 @@ class TestSublimeHarness(unittest.TestCase):
 
         # Launch sublime again
         # TODO: This won't run with Travis since it is launching synchronously =/
+        # TODO: We should be able to reproduce this one within Vagrant
         print 'launching subl'
         child = subprocess.Popen([sublime_info.get_sublime_path()])
         print 'after launch'
