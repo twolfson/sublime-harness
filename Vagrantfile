@@ -23,28 +23,20 @@ SCRIPT
 
   $install_sublime = <<SCRIPT
     # Set and persist SUBLIME_TEXT_VERSION
-    export SUBLIME_TEXT_VERSION=3.0
+    export SUBLIME_TEXT_VERSION=2
     if ! grep SUBLIME_TEXT_VERSION /etc/environment > /dev/null; then
       echo "SUBLIME_TEXT_VERSION=$SUBLIME_TEXT_VERSION" >> /etc/environment
     fi
 
     # If Sublime Text isn't installed, install it
     if test -z "$(which sublime_text)"; then
-      # Preparation for install script
-      sudo apt-get update
-      sudo apt-get install python-software-properties -y
-      sudo mkdir -p /usr/share/icons/hicolor/16x16/apps/
-      sudo mkdir -p /usr/share/icons/hicolor/32x32/apps/
-      sudo mkdir -p /usr/share/icons/hicolor/48x48/apps/
-      sudo mkdir -p /usr/share/icons/hicolor/128x128/apps/
-      sudo mkdir -p /usr/share/icons/hicolor/256x256/apps/
+      if test -z "$(which curl)"; then
+        sudo apt-get install curl -y
+      fi
+      curl http://rawgithub.com/twolfson/sublime-installer/0.1.1/install.sh | sh -s $SUBLIME_TEXT_VERSION
 
-      # # Install Sublime Text
-      # cd /vagrant
-      # ./test/install.sh
-
-      # # Output the version
-      # sublime_text --version
+      # Output the version
+      sublime_text --version
     fi
 SCRIPT
   config.vm.provision "shell", inline: $install_sublime
