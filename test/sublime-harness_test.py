@@ -126,7 +126,8 @@ class TestSublimeHarness(unittest.TestCase):
         # TODO: This won't run with Travis since it is launching synchronously =/
         # TODO: We should be able to reproduce this one within Vagrant
         print 'launching subl'
-        child = subprocess.Popen([sublime_info.get_sublime_path()])
+        child = subprocess.Popen(['/opt/sublime_text_2/sublime_text', '--class=sublime-text-2'])
+        # child = subprocess.Popen([sublime_info.get_sublime_path()])
         print 'child id', child.pid
         print 'after launch'
 
