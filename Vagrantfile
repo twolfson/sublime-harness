@@ -75,6 +75,9 @@ SCRIPT
 
     # Install our package for development
     python setup.py develop
+
+    # Install dev dependencies
+    pip install -r requirements-dev.txt
 SCRIPT
   config.vm.provision "shell", inline: $install_package
 
