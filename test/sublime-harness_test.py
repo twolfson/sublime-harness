@@ -30,6 +30,8 @@ sublime-harness
 Sublime Text
     running after running a sublime-harness
         does not re-execute harness code
+
+# TODO: If there is an error launching Sublime Text, proliferate it
 """
 
 
