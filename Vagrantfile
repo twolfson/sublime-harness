@@ -21,26 +21,6 @@ Vagrant.configure("2") do |config|
 SCRIPT
   config.vm.provision "shell", inline: $install_user_vars
 
-  $install_sublime = <<SCRIPT
-    # Set and persist SUBLIME_TEXT_VERSION
-    export SUBLIME_TEXT_VERSION=2
-    if ! grep SUBLIME_TEXT_VERSION /etc/environment > /dev/null; then
-      echo "SUBLIME_TEXT_VERSION=$SUBLIME_TEXT_VERSION" >> /etc/environment
-    fi
-
-    # If Sublime Text isn't installed, install it
-    if test -z "$(which sublime_text)"; then
-      if test -z "$(which curl)"; then
-        sudo apt-get install curl -y
-      fi
-      curl http://rawgithub.com/twolfson/sublime-installer/0.1.1/install.sh | sh -s $SUBLIME_TEXT_VERSION
-
-      # Output the version
-      sublime_text --version
-    fi
-SCRIPT
-  config.vm.provision "shell", inline: $install_sublime
-
   $install_xvfb = <<SCRIPT
     # If xvfb isn't installed, install it
     if ! test -f /usr/bin/Xvfb; then
@@ -92,6 +72,42 @@ SCRIPT
     /usr/bin/Xvfb $DISPLAY -screen 0 1024x768x24 &
 SCRIPT
   config.vm.provision "shell", inline: $launch_xvfb
+
+  config.vm.define "st2" do |st2|
+    $configure_st2 = <<SCRIPT
+      # Set and persist SUBLIME_TEXT_VERSION
+      export SUBLIME_TEXT_VERSION=2
+      if ! grep SUBLIME_TEXT_VERSION /etc/environment > /dev/null; then
+        echo "SUBLIME_TEXT_VERSION=$SUBLIME_TEXT_VERSION" >> /etc/environment
+      fi
+SCRIPT
+    st2.vm.provision "shell", inline: $configure_st2
+  end
+
+  config.vm.define "st3" do |st3|
+    $configure_st3 = <<SCRIPT
+      # Set and persist SUBLIME_TEXT_VERSION
+      export SUBLIME_TEXT_VERSION=3
+      if ! grep SUBLIME_TEXT_VERSION /etc/environment > /dev/null; then
+        echo "SUBLIME_TEXT_VERSION=$SUBLIME_TEXT_VERSION" >> /etc/environment
+      fi
+SCRIPT
+    st3.vm.provision "shell", inline: $configure_st3
+  end
+
+  $install_sublime = <<SCRIPT
+    # If Sublime Text isn't installed, install it
+    if test -z "$(which subl)"; then
+      if test -z "$(which curl)"; then
+        sudo apt-get install curl -y
+      fi
+      curl http://rawgithub.com/twolfson/sublime-installer/0.1.1/install.sh | sh -s $SUBLIME_TEXT_VERSION
+
+      # Output the version
+      subl --version
+    fi
+SCRIPT
+  config.vm.provision "shell", inline: $install_sublime
 
   # When done, vagrant ssh
   # cd /vagrant
