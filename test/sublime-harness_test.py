@@ -45,10 +45,8 @@ class TestSublimeHarness(unittest.TestCase):
         os.unlink(self.output_file)
 
         # If we are autokilling, wait for all Sublime's to close
-        print os.environ.get('SUBLIME_AUTO_KILL')
         if os.environ.get('SUBLIME_AUTO_KILL'):
             while self._sublime_is_running():
-                print 'still running'
                 time.sleep(0.1)
 
     def _wait_for_output_file(self):
@@ -67,8 +65,6 @@ class TestSublimeHarness(unittest.TestCase):
             if sublime_command in process:
                 sublime_is_running = True
                 break
-        if not sublime_is_running:
-            print ps_list
         return sublime_is_running
 
     def test_running_arbitrary_python(self):
@@ -136,7 +132,7 @@ class TestSublimeHarness(unittest.TestCase):
         self.harness.close()
 
         # Launch sublime again
-        if os.environ.get('TRAVIS') or True:
+        if os.environ.get('TRAVIS'):
             # DEV: Currently `subl` in Travis launches a fork from a bash shell meaning it uses a different PID which is destroyed.
             # TODO: We should add `/opt/sublime_text_2/sublime_text` as a primary check point for subl
             if sublime_info.get_sublime_version() < 3000:
@@ -149,9 +145,6 @@ class TestSublimeHarness(unittest.TestCase):
         # Wait for a bit
         time.sleep(1)
 
-        print 'CHILD PID', child.pid
-        # print 'STDERR', child.stderr.read()
-
         # Kill Sublime
         child.kill()
 
@@ -160,5 +153,3 @@ class TestSublimeHarness(unittest.TestCase):
         new_timestamp = f.read()
         f.close()
         self.assertEqual(orignal_timestamp, new_timestamp)
-
-        print 'moving on'

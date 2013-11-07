@@ -104,13 +104,11 @@ class Harness(object):
         # TODO: These commands should go in a launching harness
         # If we are running Sublime Text 3 and it has not yet started, use `init`
         running_via_init = False
-        print sublime_info.get_sublime_version()
         if sublime_info.get_sublime_version() >= 3000:
             # TODO: Use tasklist for Windows
             # Get process list
             child = subprocess.Popen(['ps', 'ax'], stdout=subprocess.PIPE)
             ps_list = str(child.stdout.read())
-            # print ps_list
 
             # Kill the child
             child.kill()
@@ -120,12 +118,9 @@ class Harness(object):
             sublime_is_running = False
             for process in ps_list.split('\n'):
                 if self.sublime_command in process:
-                    print process
                     sublime_is_running = True
                     break
 
-            print sublime_is_running
-            
             # If sublime isn't running, use our init trigger
             logger.debug('Current process list: %s' % ps_list)
             if not sublime_is_running:
