@@ -120,7 +120,6 @@ class TestSublimeHarness(unittest.TestCase):
         assert_run_plugin = open(__dir__ + '/test_files/missing_run.py').read()
         self.assertRaises(Exception, self.harness.run, assert_run_plugin)
 
-    @unittest.skip('abc')
     def test_prevent_multiple_runs(self):
         # Generate and run our temporary task
         plugin_str = open(__dir__ + '/test_files/timestamp.py').read() % self.output_file
@@ -137,10 +136,13 @@ class TestSublimeHarness(unittest.TestCase):
         self.harness.close()
 
         # Launch sublime again
-        if os.environ.get('TRAVIS'):
+        if os.environ.get('TRAVIS') or True:
             # DEV: Currently `subl` in Travis launches a fork from a bash shell meaning it uses a different PID which is destroyed.
             # TODO: We should add `/opt/sublime_text_2/sublime_text` as a primary check point for subl
-            child = subprocess.Popen(['/opt/sublime_text_2/sublime_text', '--class=sublime-text-2'], stderr=subprocess.PIPE)
+            if sublime_info.get_sublime_version < 3000:
+                child = subprocess.Popen(['/opt/sublime_text_2/sublime_text', '--class=sublime-text-2'], stderr=subprocess.PIPE)
+            else:
+                child = subprocess.Popen(['/opt/sublime_text/sublime_text'], stderr=subprocess.PIPE)
         else:
             child = subprocess.Popen([sublime_info.get_sublime_path()], stderr=subprocess.PIPE)
 
