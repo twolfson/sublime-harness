@@ -35,12 +35,13 @@ Install the module with: ``pip install sublime_harness``
     harness.run(script)
 
     # Wait for our file to exist (Sublime Text is forked and not synchronous)
+    output_file = '/tmp/hi'
     while (not os.path.exists(output_file) or
            os.stat(output_file).st_size == 0):
         time.sleep(0.1)
 
     # Read our data
-    with open('/tmp/hi') as f:
+    with open(output_file) as f:
       print f.read()  # Hello World!
 
 Documentation
@@ -94,7 +95,49 @@ Harness.close
 
 Examples
 --------
-TODO: One with dictionary
+As mentioned within ``Harness.dictionary``, external files can be loaded relatively to the script. This is an example of how to set up and use them.
+
+.. code:: python
+
+    # Set up a new harness
+    import os, time
+    from sublime_harness import sublime_harness
+    harness = sublime_harness.Harness()
+
+    # Copy over a local file to the directory
+    dest_hello_path = harness.directory + '/hello.py'
+    with open(dest_hello_path, 'w') as f:
+      f.write('hello = "World!"')
+
+    # Generate and run our temporary task
+    script = """
+    import os
+    import sublime
+
+    try :
+        from hello import hello  # ST 2 compatible
+    except:
+        from .hello import hello  # ST 3 compatible
+
+    def run():
+        with open('/tmp/hi-directory', 'w') as f:
+            f.write(hello)
+        sublime.run_command('exit')
+    """
+
+    harness.run(script)
+    output_file = '/tmp/hi-directory'
+    while (not os.path.exists(output_file) or
+           os.stat(output_file).st_size == 0):
+        time.sleep(0.1)
+
+    # Grab the file output
+    with open(output_file) as f:
+        print f.read() # 'World!'
+
+    # Remove the plugin and our file
+    harness.close()
+    os.unlink(dest_hello_path)
 
 Contributing
 ------------
