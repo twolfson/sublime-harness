@@ -18,13 +18,13 @@ Install the module with: ``pip install sublime_harness``
 
     harness = sublime_harness.Harness()
     script = """
-import sublime
+    import sublime
 
-# Harness will run the `run` function
-def run():
-    with open('/tmp/hi', 'w') as f:
-        f.write('Hello World!')
-    sublime.run_command('exit')"""
+    # Harness will run the `run` function
+    def run():
+        with open('/tmp/hi', 'w') as f:
+            f.write('Hello World!')
+        sublime.run_command('exit')"""
     harness.run(script)
 
     # Wait for our file to exist (Sublime Text is forked and not synchronous)
