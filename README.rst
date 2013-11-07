@@ -13,8 +13,28 @@ Install the module with: ``pip install sublime_harness``
 
 .. code:: python
 
-    from sublime_harness import run
-    run()
+    import os, time
+    from sublime_harness import sublime_harness
+
+    harness = sublime_harness.Harness()
+    script = """
+import sublime
+
+# Harness will run the `run` function
+def run():
+    with open('/tmp/hi', 'w') as f:
+        f.write('Hello World!')
+    sublime.run_command('exit')"""
+    harness.run(script)
+
+    # Wait for our file to exist (Sublime Text is forked and not synchronous)
+    while (not os.path.exists(output_file) or
+           os.stat(output_file).st_size == 0):
+        time.sleep(0.1)
+
+    # Read our data
+    with open('/tmp/hi') as f:
+      print f.read()  # Hello World!
 
 Documentation
 -------------

@@ -52,7 +52,8 @@ class TestSublimeHarness(unittest.TestCase):
 
     def _wait_for_output_file(self):
         output_file = self.output_file
-        while (not os.path.exists(output_file) or os.stat(output_file).st_size == 0):
+        while (not os.path.exists(output_file) or
+               os.stat(output_file).st_size == 0):
             time.sleep(0.1)
 
     def _sublime_is_running(self):
