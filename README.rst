@@ -59,7 +59,8 @@ Harness.__init__
     Harness()
     """Generate a new Harness for Sublime Text
 
-    When initialized, `Harness` allocates a directory (currently, same for all harnesses) for your script.
+    When initialized, `Harness` allocates a directory (currently,
+    same for all harnesses) for your script.
     """
 
 Harness.directory
