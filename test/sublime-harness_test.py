@@ -61,9 +61,10 @@ class TestSublimeHarness(unittest.TestCase):
         ps_list = str(child.stdout.read())
         child.kill()
         sublime_is_running = False
-        # sublime_path = sublime_info.get_sublime_path()
+        sublime_path = sublime_info.get_sublime_path()
+        sublime_command = os.path.basename(sublime_path)
         for process in ps_list.split('\n'):
-            if 'sublime_text' in process:
+            if sublime_command in process:
                 sublime_is_running = True
                 break
         if not sublime_is_running:

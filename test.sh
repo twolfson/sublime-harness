@@ -1,1 +1,1 @@
-SUBLIME_TEXT_PATH=/opt/sublime_text/sublime_text nosetests --nocapture --verbose --stop
+nosetests --nocapture --verbose --stop
