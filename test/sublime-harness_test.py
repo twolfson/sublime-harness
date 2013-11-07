@@ -114,9 +114,12 @@ class TestSublimeHarness(unittest.TestCase):
         self.harness.close()
 
         # Launch sublime again
-        # TODO: This is very much non-ideal... I feel like sublime-info should be able to grab this =(
-        # child = subprocess.Popen([sublime_info.get_sublime_path()])
-        child = subprocess.Popen(['/opt/sublime_text_2/sublime_text', '--class=sublime-text-2'])
+        if os.environ.get('TRAVIS'):
+            # DEV: Currently `subl` in Travis launches a fork from a bash shell meaning it uses a different PID which is destroyed.
+            # TODO: We should add `/opt/sublime_text_2/sublime_text` as a primary check point for subl
+            child = subprocess.Popen(['/opt/sublime_text_2/sublime_text', '--class=sublime-text-2'])
+        else:
+            child = subprocess.Popen([sublime_info.get_sublime_path()])
 
         # Wait for a bit
         time.sleep(1)
