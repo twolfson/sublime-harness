@@ -79,12 +79,12 @@ class Harness(object):
         # Save defaults
         self.close_called = True
 
-    def run(self, plugin_str):
+    def run(self, script):
         # TODO: Add safeguard for only running once at a time
 
         # Assert we are provided a run function
         has_run_fn = False
-        for node in ast.iter_child_nodes(ast.parse(plugin_str)):
+        for node in ast.iter_child_nodes(ast.parse(script)):
             try:
                 if (node.__class__.__name__ == 'FunctionDef' and node.name == 'run'):
                     has_run_fn = True
@@ -94,11 +94,11 @@ class Harness(object):
 
         # If there was no run function, complain and leave
         if not has_run_fn:
-            raise Exception('"run" function was not found in "plugin_str": %s' % plugin_str)
+            raise Exception('"run" function was not found in "script": %s' % script)
 
         # Output test to directory
         f = open(os.path.join(self.directory, 'plugin.py'), 'w')
-        f.write(plugin_str)
+        f.write(script)
         f.close()
 
         # TODO: These commands should go in a launching harness
