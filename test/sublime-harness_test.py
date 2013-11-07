@@ -139,17 +139,18 @@ class TestSublimeHarness(unittest.TestCase):
         if os.environ.get('TRAVIS') or True:
             # DEV: Currently `subl` in Travis launches a fork from a bash shell meaning it uses a different PID which is destroyed.
             # TODO: We should add `/opt/sublime_text_2/sublime_text` as a primary check point for subl
-            if sublime_info.get_sublime_version < 3000:
+            if sublime_info.get_sublime_version() < 3000:
                 child = subprocess.Popen(['/opt/sublime_text_2/sublime_text', '--class=sublime-text-2'], stderr=subprocess.PIPE)
             else:
-                child = subprocess.Popen(['/opt/sublime_text/sublime_text'], stderr=subprocess.PIPE)
+                child = subprocess.Popen(['/opt/sublime_text/sublime_text', '--wait'])
         else:
             child = subprocess.Popen([sublime_info.get_sublime_path()], stderr=subprocess.PIPE)
 
         # Wait for a bit
         time.sleep(1)
 
-        print 'STDERR', child.stderr.read()
+        print 'CHILD PID', child.pid
+        # print 'STDERR', child.stderr.read()
 
         # Kill Sublime
         child.kill()
@@ -159,3 +160,5 @@ class TestSublimeHarness(unittest.TestCase):
         new_timestamp = f.read()
         f.close()
         self.assertEqual(orignal_timestamp, new_timestamp)
+
+        print 'moving on'
