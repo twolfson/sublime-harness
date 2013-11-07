@@ -33,6 +33,7 @@ Sublime Text
 
 # TODO: If there is an error launching Sublime Text, proliferate it
 # Just not stderr (fucking headless + xvfb)
+# which means status code
 """
 
 
