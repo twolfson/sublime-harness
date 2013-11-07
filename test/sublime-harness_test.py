@@ -44,10 +44,26 @@ class TestSublimeHarness(unittest.TestCase):
     def tearDown(self):
         os.unlink(self.output_file)
 
+        # If we are autokilling, wait for all Sublime's to close
+        if os.environ.get('SUBLIME_AUTO_KILL'):
+            while self._sublime_is_running():
+                time.sleep(0.1)
+
     def _wait_for_output_file(self):
         output_file = self.output_file
         while (not os.path.exists(output_file) or os.stat(output_file).st_size == 0):
             time.sleep(0.1)
+
+    def _sublime_is_running(self):
+        child = subprocess.Popen(['ps', 'ax'], stdout=subprocess.PIPE)
+        ps_list = str(child.stdout.read())
+        child.kill()
+        sublime_is_running = False
+        for process in ps_list.split('\n'):
+            if self.sublime_command in process:
+                sublime_is_running = True
+                break
+        return sublime_is_running
 
     def test_running_arbitrary_python(self):
         # TODO: This test is useless due to sublime self-kill
