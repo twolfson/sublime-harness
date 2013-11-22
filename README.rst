@@ -64,7 +64,7 @@ Harness.__init__
     """
 
 Harness.directory
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 .. code:: python
 
     harness.directory
@@ -88,7 +88,7 @@ Harness.run
     """
 
 Harness.close
-^^^^^^^^^^^
+^^^^^^^^^^^^^
 .. code:: python
 
     harness.close()
