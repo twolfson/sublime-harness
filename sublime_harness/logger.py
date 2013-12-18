@@ -1,5 +1,4 @@
 import os
-from urllib import urlencode
 try:
     from urllib.request import urlopen
     from urllib.error import URLError
@@ -26,10 +25,7 @@ class HttpLogger(IgnorantLogger):
     def _log(self, level, msg):
         try:
             # TODO: This is horrible string interpolation
-            req = urlopen('http://localhost:7070', data=urlencode({
-                'level': level,
-                'msg': msg
-            }))
+            req = urlopen('http://localhost:7070', data='level={}&msg={}'.format(level, msg))
             req.read() # DEV: Stop open pipes from occurring
         except URLError:
             pass
