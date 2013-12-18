@@ -27,7 +27,7 @@ before_script:
 
 script:
   # Run our tests
-  - ./test.sh
+  - VERBOSE=TRUE ./test.sh
 
 notifications:
   email: false
