@@ -38,9 +38,10 @@ Sublime Text
 """
 
 # If we are in verbose mode, dump out ENV
-if os.environ.get('VERBOSE'):
-    print json.dumps(os.environ.__dict__, indent=4)
-
+def verbose_print(_str):
+    if os.environ.get('TEST_VERBOSE'):
+        print(_str)
+verbose_print(json.dumps(os.environ.__dict__, indent=4))
 
 class TestSublimeHarness(unittest.TestCase):
     def setUp(self):
@@ -52,14 +53,18 @@ class TestSublimeHarness(unittest.TestCase):
 
         # If we are autokilling, wait for all Sublime's to close
         if os.environ.get('SUBLIME_AUTO_KILL'):
+            verbose_print('Waiting for Sublime to die')
             while self._sublime_is_running():
                 time.sleep(0.1)
+            verbose_print('Sublime is dead! Moving on.')
 
     def _wait_for_output_file(self):
         output_file = self.output_file
+        verbose_print('Waiting for output file to exist')
         while (not os.path.exists(output_file) or
                os.stat(output_file).st_size == 0):
             time.sleep(0.1)
+        verbose_print('Output file exists!')
 
     def _sublime_is_running(self):
         child = subprocess.Popen(['ps', 'ax'], stdout=subprocess.PIPE)
