@@ -15,6 +15,7 @@ plugin_host_loaded = False
 
 class SublimeHarnessInitLauncherNamespaceCommand(sublime_plugin.ApplicationCommand):
     def run(self):
+        # Mark the plugin host as loaded to stop future timeouts
         global plugin_host_loaded
         plugin_host_loaded = True
 

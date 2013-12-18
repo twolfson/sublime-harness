@@ -13,13 +13,6 @@ from .logger import logger
 # Set up constants
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 
-# TODO: init launcher needs that file safeguard to deal with people who don't clean up
-# When init plugin is loading, check for `.abc`.
-# If it exists, continue executing. Once launched, remove it.
-# During the timeout check, keep on verifying it exists (we don't want double load race conditions)
-# Otherwise, do nothing.
-
-
 
 class Harness(object):
     sublime_path = sublime_info.get_sublime_path()
