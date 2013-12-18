@@ -27,7 +27,9 @@ before_script:
 
 script:
   # Run our tests
-  - TEST_VERBOSE=TRUE ./test.sh
+  # TODO: Remove this line
+  # - TEST_VERBOSE=TRUE ./test.sh
+  - ./test.sh
 
 notifications:
   email: false
