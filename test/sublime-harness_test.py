@@ -119,6 +119,7 @@ class TestSublimeHarness(unittest.TestCase):
         self.assertRaises(Exception, self.harness.run, assert_run_plugin)
 
     def test_prevent_multiple_runs(self):
+        # DEV: In Vagrant + ST3, this takes 15 seconds to run
         # Generate and run our temporary task
         plugin_str = open(__dir__ + '/test_files/timestamp.py').read() % self.output_file
         self.harness.run(plugin_str)
