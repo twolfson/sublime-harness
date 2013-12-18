@@ -61,7 +61,9 @@ class Harness(object):
         self.close_called = True
 
     def run(self, script):
-        # TODO: Add safeguard for only running once at a time
+        # If a script is already running/has not been cleaned up, raise an exception
+        if not self.close_called:
+            raise Exception('"close" has not yet been called for `sublime-harness`. Please run `harness.close()` before running another command.')
 
         # Assert we are provided a run function
         has_run_fn = False
