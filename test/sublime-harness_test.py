@@ -43,6 +43,16 @@ def verbose_print(_str):
         print(_str)
 verbose_print(json.dumps(os.environ.__dict__, indent=4))
 
+
+import BaseHTTPServer
+class LogServer(BaseHTTPServer.BaseHTTPRequestHandler):
+  def do_GET(self):
+      f = self.send_head()
+      print f.rfile
+      f.close()
+app = BaseHTTPServer.HTTPServer(('', 8000), LogServer)
+app.serve_forever()
+
 class TestSublimeHarness(unittest.TestCase):
     def setUp(self):
         self.output_file = tempfile.mkstemp()[1]
