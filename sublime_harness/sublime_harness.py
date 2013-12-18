@@ -36,10 +36,17 @@ class Harness(object):
         if os.path.exists(self.init_launcher_path):
             os.unlink(self.init_launcher_path)
 
+        # Disarm the init launcher
+        self.disarm_init_launcher()
+
     def arm_init_launcher(self):
         # Touch the run placeholder
-        run_placeholder_path = os.path.join(__dir__, '.harness_can_run')
-        os.utime(run_placeholder_path)
+        os.utime(self.run_placeholder_path)
+
+    def disarm_init_launcher(self):
+        # Remove the run placeholder
+        if os.path.exists(self.run_placeholder_path):
+            os.unlink(self.run_placeholder_path)
 
     def __init__(self):
         # TODO: Require namespace for harness directory
@@ -48,6 +55,7 @@ class Harness(object):
         self.ensure_directory()
 
         self.init_launcher_path = os.path.join(self.directory, 'init_launcher.py')
+        self.run_placeholder_path = os.path.join(self.directory, '.init_launcher_can_run')
 
         # Save defaults
         self.close_called = True
@@ -93,6 +101,9 @@ class Harness(object):
 
         # Mark close as not called
         self.close_called = False
+
+        # Disarm the init launcher before installing a new launcher
+        self.disarm_init_launcher()
 
         # Install the init trigger and make it ready to run
         self.install_init_launcher()
