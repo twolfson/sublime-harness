@@ -18,6 +18,9 @@ Vagrant.configure("2") do |config|
     if ! grep SUBLIME_AUTO_KILL /etc/environment > /dev/null; then
       echo "SUBLIME_AUTO_KILL=TRUE" >> /etc/environment
     fi
+    if ! grep VAGRANT /etc/environment > /dev/null; then
+      echo "VAGRANT=TRUE" >> /etc/environment
+    fi
 SCRIPT
   config.vm.provision "shell", inline: $install_user_vars
 
