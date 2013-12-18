@@ -28,8 +28,6 @@ before_script:
 script:
   # Run our tests
   # TODO: Remove this line
-  - subl --version
-  - subl
   - TEST_VERBOSE=TRUE ./test.sh
   # - ./test.sh
 
