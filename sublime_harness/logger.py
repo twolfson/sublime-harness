@@ -24,10 +24,9 @@ class IgnorantLogger(object):
 class HttpLogger(IgnorantLogger):
     def _log(self, level, msg):
         try:
-            urlopen('http://localhost:7070', data={
-                'level': level,
-                'msg': msg
-            })
+            # TODO: This is horrible string interpolation
+            req = urlopen('http://localhost:7070', data='level={}&msg={}'.format(level, msg))
+            req.read() # DEV: Stop open pipes from occurring
         except URLError:
             pass
 
