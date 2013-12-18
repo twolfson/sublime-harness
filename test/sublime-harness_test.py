@@ -44,18 +44,6 @@ def verbose_print(_str):
 verbose_print(json.dumps(os.environ.__dict__, indent=4))
 
 
-import BaseHTTPServer
-class LogServer(BaseHTTPServer.BaseHTTPRequestHandler):
-    def do_POST(self):
-        self.send_header('Content-type', 'text/plain')
-        self.end_headers()
-        len = int(self.headers.getheader('content-length'))
-        print self.rfile.read(len)
-        self.send_response(200, 'hai')
-
-app = BaseHTTPServer.HTTPServer(('', 8000), LogServer)
-app.serve_forever()
-
 class TestSublimeHarness(unittest.TestCase):
     def setUp(self):
         self.output_file = tempfile.mkstemp()[1]
