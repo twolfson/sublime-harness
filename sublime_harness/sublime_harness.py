@@ -41,7 +41,8 @@ class Harness(object):
 
     def arm_init_launcher(self):
         # Touch the run placeholder
-        os.utime(self.run_placeholder_path)
+        f = open(self.run_placeholder_path, 'w')
+        f.close()
 
     def disarm_init_launcher(self):
         # Remove the run placeholder
