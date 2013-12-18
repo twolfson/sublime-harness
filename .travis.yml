@@ -26,9 +26,12 @@ before_script:
   - export SUBLIME_AUTO_KILL=TRUE
 
 script:
+  # Collect HTTP info from Sublime to stdout
+  - python test/http_logger.py &
+
   # Run our tests
   # TODO: Remove this line
-  - TEST_VERBOSE=TRUE ./test.sh
+  - HARNESS_LOGGER=TRUE TEST_VERBOSE=TRUE ./test.sh
   # - ./test.sh
 
 notifications:
