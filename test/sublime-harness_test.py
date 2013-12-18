@@ -61,6 +61,9 @@ class TestSublimeHarness(unittest.TestCase):
             while self._sublime_is_running():
                 time.sleep(0.1)
             verbose_print('Sublime is dead! Moving on.')
+        # Otherwise, wait a bit for plugins to recollect
+        else:
+            time.sleep(1)
 
     def _wait_for_output_file(self):
         output_file = self.output_file
