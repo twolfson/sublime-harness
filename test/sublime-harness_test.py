@@ -39,7 +39,7 @@ Sublime Text
 
 # If we are in verbose mode, dump out ENV
 if os.environ.get('VERBOSE'):
-    print json.dumps(os.environ, indent=4)
+    print json.dumps(os.environ.__dict__, indent=4)
 
 
 class TestSublimeHarness(unittest.TestCase):
