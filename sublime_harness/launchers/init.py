@@ -6,6 +6,7 @@ import sublime_plugin
 
 # Set up constants
 __dir__ = os.path.dirname(os.path.abspath(__file__))
+run_placeholder = os.path.join(__dir__, '.harness_can_run')
 
 
 # Set up hook for set timeout loop
@@ -16,6 +17,14 @@ class SublimeHarnessInitLauncherNamespaceCommand(sublime_plugin.ApplicationComma
     def run(self):
         global plugin_host_loaded
         plugin_host_loaded = True
+
+        # If the harness has not been run yet, remove the lock so no others can run
+        if os.path.exists(run_placeholder):
+            os.unlink(run_placeholder)
+        # Otherwise, don't run
+        else:
+            return
+
         # On every run, re-import the test class
         # DEV: Sublime Text does not recognize changes to command.py.
         # DEV: Once it is loaded and run once via CLI, it is locked in memory until Sublime Text is restarted
