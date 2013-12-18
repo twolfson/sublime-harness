@@ -4,6 +4,14 @@ import os
 import sublime
 import sublime_plugin
 
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
+
+urlopen('http://localhost:7070', data='init is running').read()
+
+
 # Set up constants
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 run_placeholder_path = os.path.join(__dir__, '.init_launcher_can_run')
@@ -18,6 +26,9 @@ class SublimeHarnessInitLauncherNamespaceCommand(sublime_plugin.ApplicationComma
         # Mark the plugin host as loaded to stop future timeouts
         global plugin_host_loaded
         plugin_host_loaded = True
+
+        urlopen('http://localhost:7070', data='executing code').read()
+        urlopen('http://localhost:7070', data='file exists %s' % os.path.exists(run_placeholder_path)).read()
 
         # If the harness has not been run yet, remove the lock so no others can run
         if os.path.exists(run_placeholder_path):
