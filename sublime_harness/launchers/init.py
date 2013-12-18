@@ -9,7 +9,7 @@ try:
 except ImportError:
     from urllib2 import urlopen
 
-urlopen('http://localhost:7070', data='init is running').read()
+# urlopen('http://localhost:7070', data='init is running').read()
 
 
 # Set up constants
