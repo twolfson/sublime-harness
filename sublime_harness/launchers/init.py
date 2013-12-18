@@ -6,7 +6,7 @@ import sublime_plugin
 
 # Set up constants
 __dir__ = os.path.dirname(os.path.abspath(__file__))
-run_placeholder = os.path.join(__dir__, '.harness_can_run')
+run_placeholder_path = os.path.join(__dir__, '.init_launcher_can_run')
 
 
 # Set up hook for set timeout loop
@@ -20,8 +20,8 @@ class SublimeHarnessInitLauncherNamespaceCommand(sublime_plugin.ApplicationComma
         plugin_host_loaded = True
 
         # If the harness has not been run yet, remove the lock so no others can run
-        if os.path.exists(run_placeholder):
-            os.unlink(run_placeholder)
+        if os.path.exists(run_placeholder_path):
+            os.unlink(run_placeholder_path)
         # Otherwise, don't run
         else:
             return

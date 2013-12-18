@@ -23,36 +23,11 @@ class Harness(object):
         if not os.path.exists(self.directory):
             os.makedirs(self.directory)
 
-    def install_command_launcher(self):
-        # If command launcher doesn't exist, copy it
-        # TODO: Verify this works in Windows
-        orig_command_path = os.path.join(__dir__, 'launchers/command.py')
-        dest_command_path = os.path.join(self.directory, 'command_launcher.py')
-        if not os.path.exists(dest_command_path):
-            shutil.copyfile(orig_command_path, dest_command_path)
-        else:
-        # Otherwise...
-            # If there are updates for command launcher
-            expected_command = None
-            with open(orig_command_path) as f:
-                expected_command = f.read()
-            actual_command = None
-            with open(dest_command_path) as f:
-                actual_command = f.read()
-            if expected_command != actual_command:
-                # Update the file
-                shutil.copyfile(orig_command_path, dest_command_path)
-
-                # and notify the user we must restart Sublime
-                raise Exception('We had to update the sublime-harness plugin. You must close or restart Sublime to continue testing.')
-
-
     def install_init_launcher(self):
         # Clean up any past instances of init launcher
         self.remove_init_launcher()
 
         # Install a new one
-        # TODO: Verify this doesn't have any double invocation consequences
         orig_command_path = os.path.join(__dir__, 'launchers/init.py')
         shutil.copyfile(orig_command_path, self.init_launcher_path)
 
@@ -60,6 +35,11 @@ class Harness(object):
         # If the init launcher exists, delete it
         if os.path.exists(self.init_launcher_path):
             os.unlink(self.init_launcher_path)
+
+    def arm_init_launcher(self):
+        # Touch the run placeholder
+        run_placeholder_path = os.path.join(__dir__, '.harness_can_run')
+        os.utime(run_placeholder_path)
 
     def __init__(self):
         # TODO: Require namespace for harness directory
@@ -94,57 +74,39 @@ class Harness(object):
         f.write(script)
         f.close()
 
-        # TODO: These commands should go in a launching harness
-        # If we are running Sublime Text 3 and it has not yet started, use `init`
-        running_via_init = False
-        if sublime_info.get_sublime_version() >= 3000:
-            # TODO: Use tasklist for Windows
-            # Get process list
-            child = subprocess.Popen(['ps', 'ax'], stdout=subprocess.PIPE)
-            ps_list = str(child.stdout.read())
+        # TODO: These commands should go in a launching command
+        # TODO: Use tasklist for Windows
+        # Get process list
+        child = subprocess.Popen(['ps', 'ax'], stdout=subprocess.PIPE)
+        ps_list = str(child.stdout.read())
 
-            # Kill the child
-            child.kill()
+        # Kill the child
+        child.kill()
 
-            # Determine if Sublime Text is running
-            # TODO: This could be subl, sublime_text, or other
-            sublime_is_running = False
-            for process in ps_list.split('\n'):
-                if self.sublime_command in process:
-                    sublime_is_running = True
-                    break
-
-            # If sublime isn't running, use our init trigger
-            logger.debug('Current process list: %s' % ps_list)
-            if not sublime_is_running:
-                # Install the init trigger
-                self.install_init_launcher()
-
-                # and launch sublime_text
-                logger.info('Launching %s via init' % self.sublime_path)
-                subprocess.call([self.sublime_path])
-
-                # Mark the init to prevent double launch
-                running_via_init = True
-
-        # Save running_via_init info
-        self.running_via_init = running_via_init
-
-        # If we are not running via init
-        if not running_via_init:
-            # Guarantee the command launcher exists
-            self.install_command_launcher()
-
-            # Invoke the launcher command
-            # TODO: Use real namespace
-            logger.info('Launching %s via --command' % self.sublime_path)
-            subprocess.call([self.sublime_path, '--command', 'sublime_harness_command_launcher_namespace'])
+        # Determine if Sublime Text is running
+        sublime_is_running = False
+        for process in ps_list.split('\n'):
+            if self.sublime_command in process:
+                sublime_is_running = True
+                break
+        logger.debug('Current process list: %s' % ps_list)
 
         # Mark close as not called
         self.close_called = False
 
+        # Install the init trigger and make it ready to run
+        self.install_init_launcher()
+        self.arm_init_launcher()
+
+        # If Sublime wasn't running, start it
+        if not sublime_is_running:
+            logger.info('Launching %s' % self.sublime_path)
+            subprocess.call([self.sublime_path])
+
     def close(self):
         # TODO: When we get to generic directories, clean them up
-        # If we were running via init, clean it up
-        if self.running_via_init:
-            self.remove_init_launcher()
+        # Clean up our launcher
+        self.remove_init_launcher()
+
+        # Mark close as called
+        self.close_called = True
