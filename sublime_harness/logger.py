@@ -31,4 +31,6 @@ class HttpLogger(IgnorantLogger):
             pass
 
 
+# TODO: This is really bad technique. We should be doing this based off of a factory.
+# TODO: Then, inside of the place where we load the program we can use env var
 logger = HttpLogger() if os.environ.get('HARNESS_LOGGER') else IgnorantLogger()
