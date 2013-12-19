@@ -54,6 +54,7 @@ class TestSublimeHarness(unittest.TestCase):
         # If we are autokilling, wait for all Sublime's to close
         if os.environ.get('SUBLIME_AUTO_KILL'):
             verbose_print('Waiting for Sublime to die')
+            time.sleep(1)
             child = subprocess.Popen(['ps', 'ax'], stdout=subprocess.PIPE)
             ps_list = str(child.stdout.read())
             child.kill()
