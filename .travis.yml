@@ -3,12 +3,14 @@ python:
   - "2.7"
   # - "3.3"
 env:
-  - SUBLIME_TEXT_VERSION="2"
+  # - SUBLIME_TEXT_VERSION="2"
   - SUBLIME_TEXT_VERSION="3"
 
 install:
   # Install Sublime Text and output version
-  - curl http://rawgithub.com/twolfson/sublime-installer/0.1.1/install.sh | sh -s $SUBLIME_TEXT_VERSION
+  # - curl http://rawgithub.com/twolfson/sublime-installer/0.1.1/install.sh | sh -s $SUBLIME_TEXT_VERSION
+  - wget http://c758482.r82.cf2.rackcdn.com/sublime-text_build-3059_amd64.deb
+  - sudo dpkg -i sublime-text_build-3059_amd64.deb
   - subl --version
 
   # Install `sublime_harness`
