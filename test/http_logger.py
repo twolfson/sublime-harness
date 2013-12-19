@@ -5,12 +5,9 @@ import BaseHTTPServer
 # Create a server which logs POST body to stdout
 class LogServer(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_POST(self):
-        self.send_response(200)
-        self.send_header('Content-Type', 'text/plain')
-        self.end_headers()
         len = int(self.headers.getheader('content-length'))
         print self.rfile.read(len)
-        self.send_response('Logged to stdout')
+        self.send_response(200, 'Logged to stdout')
 
 
 # Create our server
