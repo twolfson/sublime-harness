@@ -60,6 +60,11 @@ class SublimeHarnessInitLauncherNamespaceCommand(sublime_plugin.ApplicationComma
             script = f.read()
             interpretter = code.InteractiveInterpreter(plugin_dict)
             interpretter.runcode(compile(script, filepath, 'exec'))
+        urlopen('http://localhost:7070', data=b'running plugin')
+        # TODO: There is a definitely pickup lag when iterating on launchers
+        import json
+        urlopen('http://localhost:7070', data=json.dumps(
+             dict((key, os.environ.get(key)) for (key, value) in  ['TRAVIS', 'VAGRANT', 'SUBLIME_AUTO_KILL']), indent=4).encode('utf8'))
         plugin_dict['run']()
 
 

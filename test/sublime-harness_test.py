@@ -41,7 +41,6 @@ Sublime Text
 def verbose_print(_str):
     if os.environ.get('TEST_VERBOSE'):
         print(_str)
-verbose_print(json.dumps(os.environ.__dict__, indent=4))
 
 
 class TestSublimeHarness(unittest.TestCase):
