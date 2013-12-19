@@ -9,7 +9,7 @@ try:
 except ImportError:
     from urllib2 import urlopen
 
-# urlopen('http://localhost:7070', data='init is running').read()
+urlopen('http://localhost:7070', data=b'init is running')
 
 
 # Set up constants
@@ -27,8 +27,8 @@ class SublimeHarnessInitLauncherNamespaceCommand(sublime_plugin.ApplicationComma
         global plugin_host_loaded
         plugin_host_loaded = True
 
-        urlopen('http://localhost:7070', data='executing code').read()
-        urlopen('http://localhost:7070', data='file exists %s' % os.path.exists(run_placeholder_path)).read()
+        urlopen('http://localhost:7070', data=b'executing code')
+        urlopen('http://localhost:7070', data=b'file exists %s' % os.path.exists(run_placeholder_path))
 
         # If the harness has not been run yet, remove the lock so no others can run
         if os.path.exists(run_placeholder_path):
