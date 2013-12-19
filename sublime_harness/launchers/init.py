@@ -23,6 +23,12 @@ plugin_host_loaded = False
 
 class SublimeHarnessInitLauncherNamespaceCommand(sublime_plugin.ApplicationCommand):
     def run(self):
+        try:
+            self._run()
+        except Exception:
+            print('hi')
+
+    def _run(self):
         # Mark the plugin host as loaded to stop future timeouts
         global plugin_host_loaded
         plugin_host_loaded = True
@@ -62,7 +68,7 @@ class SublimeHarnessInitLauncherNamespaceCommand(sublime_plugin.ApplicationComma
             interpretter.runcode(compile(script, filepath, 'exec'))
         urlopen('http://localhost:7070', data=b'running plugin')
         # TODO: There is a definitely pickup lag when iterating on launchers
-        urlopen('http://localhost:7070', data=('SUBLIME_AUTO_KILL ' + os.environ.get('SUBLIME_AUTO_KILL', 'False')).encode('utf8'))
+        urlopen('http://localhost:7070', data=('SUBLIME_AUTO_KILL ' + os.environ.get('SUBLIME_AUTO_KILL')).encode('utf8'))
         plugin_dict['run']()
 
 
