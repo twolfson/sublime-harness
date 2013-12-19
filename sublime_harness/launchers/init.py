@@ -1,8 +1,10 @@
 # Load in core dependencies
 import code
 import os
+import sys
 import sublime
 import sublime_plugin
+import traceback
 
 try:
     from urllib.request import urlopen
@@ -26,7 +28,11 @@ class SublimeHarnessInitLauncherNamespaceCommand(sublime_plugin.ApplicationComma
         try:
             self._run()
         except Exception:
-            print('hi')
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            err = ''.join(traceback.format_exception(exc_type,
+                                                     exc_value,
+                                                     exc_traceback))
+            urlopen('http://localhost:7070', data=err.encode('utf8'))
 
     def _run(self):
         # Mark the plugin host as loaded to stop future timeouts
