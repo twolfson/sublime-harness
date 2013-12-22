@@ -51,20 +51,9 @@ class TestSublimeHarness(unittest.TestCase):
     def tearDown(self):
         os.unlink(self.output_file)
 
-        # If we are autokilling, wait for all Sublime's to close
-        if os.environ.get('SUBLIME_AUTO_KILL'):
-            verbose_print('Waiting for Sublime to die')
-            time.sleep(1)
-            child = subprocess.Popen(['ps', 'ax'], stdout=subprocess.PIPE)
-            ps_list = str(child.stdout.read())
-            child.kill()
-            verbose_print(ps_list)
-            while self._sublime_is_running():
-                time.sleep(0.1)
-            verbose_print('Sublime is dead! Moving on.')
-        # Otherwise, wait a bit for plugins to recollect
-        else:
-            time.sleep(1)
+        # Wait a bit for plugins to recollect
+        # TODO: Figure out a better way to deal with this...
+        time.sleep(1)
 
     def _wait_for_output_file(self):
         output_file = self.output_file
