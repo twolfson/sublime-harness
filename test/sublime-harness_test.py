@@ -136,7 +136,7 @@ class TestSublimeHarness(unittest.TestCase):
         self.harness.close()
 
         # Launch sublime again
-        if os.environ.get('TRAVIS'):
+        if os.environ.get('TRAVIS') or os.environ.get('VAGRANT'):
             # DEV: Currently `subl` in Travis launches a fork from a bash shell meaning it uses a different PID which is destroyed.
             # TODO: We should add `/opt/sublime_text_2/sublime_text` as a primary check point for subl
             if sublime_info.get_sublime_version() < 3000:
