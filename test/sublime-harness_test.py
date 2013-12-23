@@ -118,7 +118,9 @@ class TestSublimeHarness(unittest.TestCase):
         assert_run_plugin = open(__dir__ + '/test_files/missing_run.py').read()
         self.assertRaises(Exception, self.harness.run, assert_run_plugin)
 
-    def test_prevent_multiple_runs(self):
+    # DEV: Namez with zz to always run last (to see if lower level issues or this test are the problem)
+    def test_zz_prevent_multiple_runs(self):
+        # DEV: In Vagrant + ST3, this takes 15 seconds to run
         # Generate and run our temporary task
         plugin_str = open(__dir__ + '/test_files/timestamp.py').read() % self.output_file
         self.harness.run(plugin_str)
