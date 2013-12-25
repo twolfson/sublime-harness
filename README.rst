@@ -21,9 +21,9 @@ Install the module with: ``pip install sublime_harness``
 .. code:: python
 
     import os, time
-    from sublime_harness import sublime_harness
+    from sublime_harness import Harness
 
-    harness = sublime_harness.Harness()
+    harness = Harness()
     script = """
     import sublime
 
@@ -102,8 +102,8 @@ As mentioned within ``Harness.dictionary``, external files can be loaded relativ
 
     # Set up a new harness
     import os, time
-    from sublime_harness import sublime_harness
-    harness = sublime_harness.Harness()
+    from sublime_harness import Harness
+    harness = Harness()
 
     # Copy over a local file to the directory
     dest_hello_path = harness.directory + '/hello.py'
