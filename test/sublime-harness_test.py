@@ -7,7 +7,7 @@ import subprocess
 
 import sublime_info
 
-from sublime_harness import sublime_harness
+import sublime_harness
 
 # Set up constants
 __dir__ = os.path.dirname(os.path.abspath(__file__))

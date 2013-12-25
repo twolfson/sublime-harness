@@ -20,7 +20,6 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 # Otherwise, do nothing.
 
 
-
 class Harness(object):
     sublime_path = sublime_info.get_sublime_path()
     sublime_command = os.path.basename(sublime_path)
