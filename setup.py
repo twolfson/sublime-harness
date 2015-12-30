@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='sublime_harness',
-    version='0.4.1',
+    version='0.4.2',
     description='Run Python in Sublime Text from outside of Sublime Text',
     long_description=open('README.rst').read(),
     keywords=[
