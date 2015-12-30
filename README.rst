@@ -14,6 +14,16 @@ Run Python in Sublime Text from outside of Sublime Text
 
     Currently, only Linux is supported but OSX and Windows support are planned.
 
+Deprecation notice
+==================
+We have decided to deprecate ``sublime-harness`` in favor of `randy3k/UnitTesting`_.
+
+It has greater platform support and a less brittle design for local development.
+
+https://github.com/randy3k/UnitTesting
+
+.. _`randy3k/UnitTesting`: https://github.com/randy3k/UnitTesting
+
 Getting Started
 ---------------
 Install the module with: ``pip install sublime_harness``
