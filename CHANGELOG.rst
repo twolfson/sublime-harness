@@ -1,5 +1,7 @@
 sublime-harness changelog
 =========================
+1.0.0 - Deprecated ``sublime-harness``
+
 0.4.2 - Added foundry for release
 
 0.4.1 - Updated all ``rawgithub.com`` references to ``raw.github.com``
