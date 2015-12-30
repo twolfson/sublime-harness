@@ -3,3 +3,4 @@ build/
 dist/
 sublime_harness.egg-info
 .vagrant/
+node_modules/
